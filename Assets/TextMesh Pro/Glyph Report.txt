@@ -1,0 +1,12 @@
+Font: Playfair Display  Style: Regular
+Point Size: 40   SP/PD Ratio: 12,5%
+
+Characters included: 214/214
+Missing characters: 0
+Excluded characters: 0
+
+Characters missing from font file:
+----------------------------------------
+
+Characters excluded from packing:
+----------------------------------------
