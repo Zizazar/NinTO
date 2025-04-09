@@ -13,31 +13,26 @@ public class SplineMovement : MonoBehaviour
 
     void Update()
     {
-        HandleInput();
         MoveAlongSpline();
     }
 
-    void HandleInput()
-    {
-        if (!isMoving)
-        {
-            if (Input.GetKeyDown(KeyCode.A) && currentKnotIndex < knots.Length - 1) MoveToNextKnot();
-            else if (Input.GetKeyDown(KeyCode.D) && currentKnotIndex > 0) MoveToPreviousKnot();
-        }
-    }
 
-    public void MoveToNextKnot()
+    public bool MoveToNextKnot()
     {
+        if (currentKnotIndex >= knots.Length - 1 || isMoving) return false;
         targetKnotIndex = currentKnotIndex + 1;
         isMoving = true;
         t = 0.0f;
+        return true;
     }
 
-    public void MoveToPreviousKnot()
+    public bool MoveToPreviousKnot()
     {
+        if (currentKnotIndex <= 0 || isMoving) return false;
         targetKnotIndex = currentKnotIndex - 1;
         isMoving = true;
         t = 1.0f;
+        return true;
     }
 
     void MoveAlongSpline()
@@ -99,7 +94,7 @@ public class SplineMovement : MonoBehaviour
         if (knots == null || knots.Length < 2) return;
 
         Gizmos.color = Color.white;
-        for (int i = 0; i < knots.Length; i++)
+        for (int i = 0; i < knots.Length - 1; i++)
         {
             int p0 = Mathf.Max(i - 1, 0);
             int p1 = i;
