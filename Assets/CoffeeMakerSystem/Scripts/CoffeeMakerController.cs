@@ -35,20 +35,23 @@ namespace CoffeeMakerSystem
             {
                 case CoffeeState.SelectCup:
                     HighlightObjectWithTag("Cup");
-                    break;
-
-                case CoffeeState.PlaceCupOnMachine:
                     HighlightObjectWithTag("CupTarget");
                     break;
 
-                case CoffeeState.MoveDispenserToGrinder:
+                case CoffeeState.PlaceCupOnMachine:
                     HighlightObjectWithTag("Dispenser");
                     HighlightObjectWithTag("Grinder");
                     break;
 
-                case CoffeeState.CollectCoffee:
+                case CoffeeState.MoveDispenserToGrinder:
                     HighlightObjectWithTag("Spoon");
-                    HighlightObjectWithTag("Grinder");
+                    HighlightObjectWithTag("GrinderWafla");
+                    HighlightObjectWithTag("Dispenser");
+                    break;
+
+                case CoffeeState.CollectCoffee:
+                    HighlightObjectWithTag("Dispenser");
+                    HighlightObjectWithTag("Machine");
                     break;
 
                 case CoffeeState.PutCoffeeInDispenser:
@@ -102,21 +105,21 @@ namespace CoffeeMakerSystem
                     break;
 
                 case CoffeeState.PlaceCupOnMachine:
-                    if (objectTag == "CupTarget")
+                    if (objectTag == "Dispenser")
                     {
                         UpdateState(CoffeeState.MoveDispenserToGrinder);
                     }
                     break;
 
                 case CoffeeState.MoveDispenserToGrinder:
-                    if (objectTag == "Dispenser" || objectTag == "Grinder")
+                    if (objectTag == "Spoon")
                     {
                         UpdateState(CoffeeState.CollectCoffee);
                     }
                     break;
 
                 case CoffeeState.CollectCoffee:
-                    if (objectTag == "Spoon" || objectTag == "Grinder")
+                    if (objectTag == "Dispenser")
                     {
                         UpdateState(CoffeeState.PutCoffeeInDispenser);
                     }

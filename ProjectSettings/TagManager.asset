@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Cup
+  - CupTarget
+  - Dispenser
+  - Grinder
+  - Spoon
+  - GrinderWafla
+  - Machine
   layers:
   - Default
   - TransparentFX
