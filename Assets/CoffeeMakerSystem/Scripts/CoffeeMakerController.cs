@@ -54,18 +54,12 @@ namespace CoffeeMakerSystem
                     HighlightObjectWithTag("Machine");
                     break;
 
-                case CoffeeState.PutCoffeeInDispenser:
-                    HighlightObjectWithTag("Spoon");
-                    HighlightObjectWithTag("Dispenser");
-                    break;
-
                 case CoffeeState.ReturnDispenserToMachine:
-                    HighlightObjectWithTag("Dispenser");
-                    HighlightObjectWithTag("DispenserTarget");
+                    HighlightObjectWithTag("Button");
                     break;
 
                 case CoffeeState.BrewCoffee:
-                    HighlightObjectWithTag("BrewButton");
+                    HighlightObjectWithTag("Cup");
                     break;
 
                 case CoffeeState.Finish:
@@ -121,26 +115,19 @@ namespace CoffeeMakerSystem
                 case CoffeeState.CollectCoffee:
                     if (objectTag == "Dispenser")
                     {
-                        UpdateState(CoffeeState.PutCoffeeInDispenser);
-                    }
-                    break;
-
-                case CoffeeState.PutCoffeeInDispenser:
-                    if (objectTag == "Spoon" || objectTag == "Dispenser")
-                    {
                         UpdateState(CoffeeState.ReturnDispenserToMachine);
                     }
                     break;
 
                 case CoffeeState.ReturnDispenserToMachine:
-                    if (objectTag == "Dispenser" || objectTag == "DispenserTarget")
+                    if (objectTag == "Button")
                     {
                         UpdateState(CoffeeState.BrewCoffee);
                     }
                     break;
 
                 case CoffeeState.BrewCoffee:
-                    if (objectTag == "BrewButton")
+                    if (objectTag == "Cup")
                     {
                         UpdateState(CoffeeState.Finish);
                     }

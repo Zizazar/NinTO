@@ -11,6 +11,7 @@ TagManager:
   - Spoon
   - GrinderWafla
   - Machine
+  - Button
   layers:
   - Default
   - TransparentFX

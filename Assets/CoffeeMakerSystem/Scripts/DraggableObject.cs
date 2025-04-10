@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace CoffeeMakerSystem
@@ -19,6 +20,10 @@ namespace CoffeeMakerSystem
         
         [SerializeField] private GameObject _coffee;
         [SerializeField] private GameObject _coffee2;
+        [SerializeField] private GameObject _particl1;
+        [SerializeField] private GameObject _particl2;
+        [SerializeField] private GameObject _fullCup;
+        [SerializeField] private GameObject _cup;
 
         void Start()
         {
@@ -39,7 +44,14 @@ namespace CoffeeMakerSystem
 
         void OnMouseDown()
         {
-            isDragging = true;
+            if(objectTag != "Button")
+                isDragging = true;
+            else
+            {
+                _particl1.SetActive(true);
+                _particl2.SetActive(true);
+                StartCoroutine(WaitAndExecute());
+            }
         }
 
         void OnMouseUp()
@@ -149,11 +161,24 @@ namespace CoffeeMakerSystem
             _coffee.SetActive(false);
             _coffee2.SetActive(true);
         }
-
+        IEnumerator WaitAndExecute()
+        {
+            yield return new WaitForSeconds(4f);
+            _particl1.SetActive(false);
+            _particl2.SetActive(false);
+            coffeeMakerController?.OnObjectPlaced(objectTag);
+            _fullCup.SetActive(true);
+            _cup.SetActive(false);
+            
+        }
         void ReturnToOriginalPosition()
         {
             isDragging = false;
             transform.position = originalPosition;
+            if (objectTag == "Dispenser" && _coffee.activeInHierarchy)
+            {
+                coffeeMakerController?.OnObjectPlaced(objectTag);
+            }
         }
     }
 }
