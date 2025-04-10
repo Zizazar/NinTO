@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using TMPro;
-using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -34,7 +34,8 @@ public class PlayerController : MonoBehaviour
     private AudioSource _audioSource;
 
     [Header("Sounds")]
-    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private AudioClip moveSound;
+    [SerializeField] private SceneAsset endScene;
 
 
     void Start()
@@ -56,13 +57,14 @@ public class PlayerController : MonoBehaviour
     {
         HandleInput();
         UpdateScenario();
+        UpdateCounter();
     }
 
     private void HandleInput()
     {
-        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot();}
+        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot();} // Добавить звук перемещения
 
-        if (_prevPosAction.IsPressed()) _splineMovement.MoveToPreviousKnot();
+        if (_prevPosAction.IsPressed()) _splineMovement.MoveToPreviousKnot(); // И сюда
 
         if (_grabAction.IsPressed()) return;
 
@@ -75,39 +77,41 @@ public class PlayerController : MonoBehaviour
 
 
     private void Interact() {
-        if (_splineMovement.currentKnotIndex == 1 && !uiController.IsOppened(UiType.Handbook) && !uiController.IsOppened(UiType.Dialogue)) // && _currentNpc.readyForDialog()
+        if (_splineMovement.currentKnotIndex == 1 && !uiController.IsOppened(UiType.Handbook) && !uiController.IsOppened(UiType.Dialogue) && _currentNpc.readyForDialog()) 
         {
 
-            switch (_currentNpc.Stage)
+            switch (_currentNpc.Stage) // Это тригеры при нажтии по клиенту
             {
                 case 0:
                     uiController.openUI(UiType.Dialogue);
                     dialogueController.StartDialogue(_currentNpc.getOrderDialogue(), _currentNpc);
                     break;
-                case 1:  
-                    GiveCoffee();
-                    break;
-                case 2:
+                case 1:
                     timer.Pause();
                     uiController.openUI(UiType.Dialogue);
                     dialogueController.StartDialogue(_currentNpc.getDoneDialogue(), _currentNpc);
                     break;
-                case 3:
-                    addNpcToHandboook();
-                    break;
+                
             }
+            Debug.Log(_currentNpc.Stage);
         }
     }
 
-    void UpdateScenario()
+    void UpdateScenario() // Это тригеры после окончания диалогов
     {
-        switch (_currentNpc.Stage)
-        {
-            case 1:
-                timer.Begin();
-                _currentNpc.stageChanged = false;
-                break;
-
+        if (_currentNpc.stageChanged) {
+            switch (_currentNpc.Stage)
+            {
+                case 1:
+                    timer.Begin();
+                    _currentNpc.stageChanged = false; // Костыль для выполнения 1 раз
+                    break;
+                case 2:
+                    addNpcToHandboook();
+                    _currentNpc.Leave();
+                    _currentNpc.stageChanged = false;
+                    break;
+            }
         }
     }
 
@@ -140,5 +144,10 @@ public class PlayerController : MonoBehaviour
     private void UpdateCounter()
     {
         clientCounter.text = string.Format("{0} / 4", _clientsCount);
+    }
+
+    public void EndGame()
+    {
+        SceneManager.LoadScene("End");
     }
 }

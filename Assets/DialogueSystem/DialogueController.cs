@@ -89,7 +89,7 @@ public class DialogueController : MonoBehaviour
         foreach (Phrase phrase in phrases)
         {
             currentPhrases.Enqueue(phrase);
-            _npcController.saidPhrases += (phrase.speaker == CharacterType.Player) ? "<i></b><color=#000b>" : "</i><b><color=#000>" + phrase.text + "\n";
+            _npcController.saidPhrases += ((phrase.speaker == CharacterType.Player) ? "<i></b><color=#000b>" : "</i><b><color=#000>") + phrase.text + "\n";
         }
     }
 
@@ -119,7 +119,7 @@ public class DialogueController : MonoBehaviour
         void EndDialogue()
         {
             dialogueInProcess = false;
-            _npcController.Stage++; // Переход в 1 и 3 состояние
+            _npcController.Stage++; // Переход в 1 и 2 состояние
             _npcController.stageChanged = true;
             uiController.closeUI(UiType.Dialogue);
         }

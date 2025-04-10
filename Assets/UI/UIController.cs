@@ -56,7 +56,13 @@ public class UIController : MonoBehaviour
         popupOk = choose;
         closeUI(UiType.Popup);
     }
+
     public void OpenPopup() { openUI(UiType.Popup); }
+
+    public void FadeBlack()
+    {
+
+    }
 }
 
 public enum UiType

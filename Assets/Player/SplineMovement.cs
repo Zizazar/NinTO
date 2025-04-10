@@ -66,9 +66,6 @@ public class SplineMovement : MonoBehaviour
 
     public bool IsStoppedInEnd()
     {
-        Debug.Log("stopped");
-        Debug.Log(isMoving);
-        Debug.Log(currentKnotIndex);
         return (!isMoving) && currentKnotIndex == knots.Length - 1;
     }
     public bool IsStoppedOnStart()

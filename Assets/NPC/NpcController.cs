@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NpcController : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class NpcController : MonoBehaviour
 
     private Animator _animator;
     private SplineMovement _splineMovement;
+    private bool IsLeaving = false;
 
     void Start()
     {
@@ -26,6 +28,8 @@ public class NpcController : MonoBehaviour
     void Update()
     {
         _animator.SetBool("Walking", _splineMovement.isMoving);
+        if (IsLeaving && !_splineMovement.IsStoppedOnStart())
+            Destroy(gameObject); // ”ничтожаем)
     }
 
     public bool readyForDialog()
@@ -40,6 +44,11 @@ public class NpcController : MonoBehaviour
     public DoneDialog getDoneDialogue()
     {
         return npcData.doneDialog;
+    }
+    public void Leave()
+    {
+        _splineMovement.StartAutomaticMovement(false);
+        IsLeaving = true;
     }
 
 }
