@@ -6,20 +6,23 @@ public class SplineMovement : MonoBehaviour
     public float speed = 1.0f;
     [Range(0.1f, 5f)] public float rotationSmoothness = 2f;
 
-    private int currentKnotIndex = 0;
+    public int currentKnotIndex = 0;
     private float t = 0.0f;
-    private bool isMoving = false; 
+    public bool isMoving = false; 
+    private bool automaticMode = false;
+    private bool isForwardDirection = true;
     private int targetKnotIndex;
 
     void Update()
     {
+        HandleAutomaticMovement();
         MoveAlongSpline();
     }
 
 
     public bool MoveToNextKnot()
     {
-        if (currentKnotIndex >= knots.Length - 1 || isMoving) return false;
+        if (currentKnotIndex >= knots.Length - 1 || isMoving) return false; // Для проигровяния звуков
         targetKnotIndex = currentKnotIndex + 1;
         isMoving = true;
         t = 0.0f;
@@ -33,6 +36,44 @@ public class SplineMovement : MonoBehaviour
         isMoving = true;
         t = 1.0f;
         return true;
+    }
+
+    void HandleAutomaticMovement()
+    {
+        if (automaticMode && !isMoving)
+        {
+            if (isForwardDirection)
+            {
+                if (currentKnotIndex < knots.Length - 1)
+                    MoveToNextKnot();
+            }
+            else
+            {
+                if (currentKnotIndex > 0)
+                    MoveToPreviousKnot();
+            }
+        }
+    }
+    public void StartAutomaticMovement(bool forward)
+    {
+        automaticMode = true;
+        isForwardDirection = forward;
+        currentKnotIndex = forward ? 0 : knots.Length - 1;
+        targetKnotIndex = forward ? 1 : knots.Length - 2;
+        t = forward ? 0f : 1f;
+        MoveAlongSpline();
+    }
+
+    public bool IsStoppedInEnd()
+    {
+        Debug.Log("stopped");
+        Debug.Log(isMoving);
+        Debug.Log(currentKnotIndex);
+        return (!isMoving) && currentKnotIndex == knots.Length - 1;
+    }
+    public bool IsStoppedOnStart()
+    {
+        return !isMoving && currentKnotIndex == 0;
     }
 
     void MoveAlongSpline()
@@ -59,13 +100,24 @@ public class SplineMovement : MonoBehaviour
             Vector3 newPos = GetCatmullRomPosition(t, knots[p0].position, knots[p1].position, knots[p2].position, knots[p3].position);
             transform.position = newPos;
 
-            transform.rotation = Quaternion.Slerp(
-            transform.rotation,
-            knots[targetKnotIndex].rotation,
-            Time.deltaTime * rotationSmoothness
-        );
+            if (automaticMode == false)
+            {
+                transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                knots[targetKnotIndex].rotation,
+                Time.deltaTime * rotationSmoothness
+                );
+            } else
+            {
+                transform.rotation = transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation( knots[targetKnotIndex].position - transform.position),
+                Time.deltaTime * rotationSmoothness
+                );
+            }
         }
     }
+
 
     void GetSplinePoints(out int p0, out int p1, out int p2, out int p3)
     {

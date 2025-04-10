@@ -9,7 +9,7 @@ public class BasicDialog : ScriptableObject
 [System.Serializable]
 public struct Phrase
 {
-    public Speaker speaker;
+    public CharacterType speaker;
     [TextArea]
     public string text;
 }

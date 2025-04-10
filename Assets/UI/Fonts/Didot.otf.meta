@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: 8ee523547795e3a46b9b549b5e6d1790
+guid: 9f88220458e22d94cbf00cbde40e3671
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
   fontSize: 16
-  forceTextureCase: -1
+  forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Playfair Display
+  - Didot
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
