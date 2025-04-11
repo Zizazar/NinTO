@@ -7,12 +7,8 @@ using UnityEngine;
 public class OrderDialog : BasicDialog
 {
 
-    public Phrase phrase;
+    public Phrase[] phrases;
 
-    [System.Serializable] // Перенести потом в контроллер игрока или что то такое
-    public enum CoffeeType
-    {
-        Cappuccino
-    }
+    
     
 }

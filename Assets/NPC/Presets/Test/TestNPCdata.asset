@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d30f7514df71e479d5a6b5f3bdebce, type: 3}
+  m_Name: TestNPCdata
+  m_EditorClassIdentifier: 
+  npcName: Test
+  npcType: 0
+  coffeeType: 0
+  handbookCardId: 0
+  orderDialog: {fileID: 11400000, guid: 5cc069931f28e3848b63bbea23c131be, type: 2}
+  doneDialog: {fileID: 11400000, guid: 1204a0236ea92064488bc46fba324c01, type: 2}

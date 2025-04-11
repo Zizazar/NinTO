@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bce9939e1c5e184a97faea88c0b6306, type: 3}
+  m_Name: TestDoneDialog
+  m_EditorClassIdentifier: 
+  wrongCoffeePhrases:
+  - speaker: 0
+    text: AAAAAA
+  badCoffeeTimePhrases:
+  - speaker: 0
+    text: fefef
+  normCoffeeTimePhrases:
+  - speaker: 0
+    text: fefefe
+  perfectCoffeeTimePhrases:
+  - speaker: 0
+    text: fefefe
