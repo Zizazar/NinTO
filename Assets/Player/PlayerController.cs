@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Burst.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public UIController uiController;
     public DialogueController dialogueController;
     public HandbookController handbookController;
+    public HintsController hints;
     public TimerController timer;
 
     public string playerName;
@@ -62,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
-        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot();} // Добавить звук перемещения
+        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot(); hints.showHint("test", BindKey.A); } // Добавить звук перемещения
 
         if (_prevPosAction.IsPressed()) _splineMovement.MoveToPreviousKnot(); // И сюда
 
