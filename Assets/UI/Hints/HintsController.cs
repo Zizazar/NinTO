@@ -24,7 +24,7 @@ public class HintsController : MonoBehaviour
         
     }
 
-    public void showHint(string message, BindKey bindKey = BindKey.None)
+    public void showHint(string message, float delay = 5, BindKey bindKey = BindKey.None)
     {
         textComp.text = message;
         if ((int)bindKey > -1)
@@ -35,6 +35,7 @@ public class HintsController : MonoBehaviour
             keybindImage.sprite = null;
         }
         _animator.Play("Show");
+        Invoke("hideHint", delay);
     }
 
     public void hideHint()

@@ -4,12 +4,12 @@ public class SplineMovement : MonoBehaviour
 {
     public Transform[] knots;
     public float speed = 1.0f;
-    [Range(0.1f, 5f)] public float rotationSmoothness = 2f;
+    [Range(0.1f, 10f)] public float rotationSmoothness = 2f;
 
     public int currentKnotIndex = 0;
     private float t = 0.0f;
     public bool isMoving = false; 
-    private bool automaticMode = false;
+    [SerializeField] private bool automaticMode = false;
     private bool isForwardDirection = true;
     private int targetKnotIndex;
 
@@ -42,35 +42,46 @@ public class SplineMovement : MonoBehaviour
     {
         if (automaticMode && !isMoving)
         {
+            Debug.Log(isForwardDirection);
             if (isForwardDirection)
             {
                 if (currentKnotIndex < knots.Length - 1)
+                {
                     MoveToNextKnot();
+                } else
+                {
+                }
             }
             else
             {
                 if (currentKnotIndex > 0)
+                {
                     MoveToPreviousKnot();
+                }
+                else
+                {
+                }
             }
         }
     }
     public void StartAutomaticMovement(bool forward)
     {
+        Debug.Log("Live");
         automaticMode = true;
         isForwardDirection = forward;
         currentKnotIndex = forward ? 0 : knots.Length - 1;
         targetKnotIndex = forward ? 1 : knots.Length - 2;
         t = forward ? 0f : 1f;
-        MoveAlongSpline();
     }
 
     public bool IsStoppedInEnd()
     {
+
         return (!isMoving) && currentKnotIndex == knots.Length - 1;
     }
     public bool IsStoppedOnStart()
     {
-        return !isMoving && currentKnotIndex == 0;
+        return (!isMoving) && currentKnotIndex == 0;
     }
 
     void MoveAlongSpline()
@@ -88,7 +99,8 @@ public class SplineMovement : MonoBehaviour
             {
                 t = Mathf.Clamp(t, 0.0f, 1.0f);
                 currentKnotIndex = targetKnotIndex;
-                isMoving = false;
+                transform.rotation = knots[currentKnotIndex].rotation;
+               isMoving = false;
             }
 
             int p0, p1, p2, p3;

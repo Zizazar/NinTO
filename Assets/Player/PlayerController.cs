@@ -19,7 +19,8 @@ public class PlayerController : MonoBehaviour
     public string playerName;
     public GameObject[] Npcs;
     public TMP_Text clientCounter;
-    
+    public Transform npcPoint;
+
 
 
     private SplineMovement _splineMovement;
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour
         _NextDialogAction = InputSystem.actions.FindAction("NextDialogue");
 
         NextClient();
+        hints.showHint("Когда к вам подайдёт клиент", 8, BindKey.E);
     }
 
     void Update()
@@ -64,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
-        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot(); hints.showHint("test", BindKey.A); } // Добавить звук перемещения
+        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot(); } // Добавить звук перемещения
 
         if (_prevPosAction.IsPressed()) _splineMovement.MoveToPreviousKnot(); // И сюда
 
@@ -79,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
 
     private void Interact() {
-        if (_splineMovement.currentKnotIndex == 1 && !uiController.IsOppened(UiType.Handbook) && !uiController.IsOppened(UiType.Dialogue) && _currentNpc.readyForDialog()) 
+        if (_splineMovement.currentKnotIndex == 0 && !uiController.IsOppened(UiType.Handbook) && !uiController.IsOppened(UiType.Dialogue) && _currentNpc.readyForDialog()) 
         {
 
             switch (_currentNpc.Stage) // Это тригеры при нажтии по клиенту
@@ -106,9 +108,11 @@ public class PlayerController : MonoBehaviour
             {
                 case 1:
                     timer.Begin();
+                    hints.showHint("Теперь готовьте кофе! \n <i>Перейдите к столу с кофе-машиной", 10, BindKey.A);
                     _currentNpc.stageChanged = false; // Костыль для выполнения 1 раз
                     break;
                 case 2:
+                    hints.showHint("Запись о клиенте добавленна в блакнот.", 10, BindKey.J);
                     addNpcToHandboook();
                     _currentNpc.Leave();
                     _currentNpc.stageChanged = false;
@@ -133,7 +137,7 @@ public class PlayerController : MonoBehaviour
     {
         _clientsCount++;
         
-        GameObject npc = Instantiate(Npcs[_clientsCount - 1], Vector3.zero, new Quaternion(0, 0, 0, 0));
+        GameObject npc = Instantiate(Npcs[_clientsCount - 1], npcPoint);
         _currentNpc = npc.GetComponent<NpcController>();
     }
 

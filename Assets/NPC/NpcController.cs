@@ -19,7 +19,7 @@ public class NpcController : MonoBehaviour
 
     void Start()
     {
-        _splineMovement = GetComponent<SplineMovement>();
+        _splineMovement = GetComponentInChildren<SplineMovement>();
         _animator = GetComponent<Animator>();
         _splineMovement.StartAutomaticMovement(true);
     }
@@ -28,7 +28,7 @@ public class NpcController : MonoBehaviour
     void Update()
     {
         _animator.SetBool("Walking", _splineMovement.isMoving);
-        if (IsLeaving && !_splineMovement.IsStoppedOnStart())
+        if (IsLeaving && _splineMovement.IsStoppedOnStart())
             Destroy(gameObject); // ”ничтожаем)
     }
 
@@ -47,6 +47,7 @@ public class NpcController : MonoBehaviour
     }
     public void Leave()
     {
+        
         _splineMovement.StartAutomaticMovement(false);
         IsLeaving = true;
     }
