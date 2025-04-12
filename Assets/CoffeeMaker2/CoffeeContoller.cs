@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using static CoffeeMakerSystem.CoffeeMakerController;
 using static Unity.Burst.Intrinsics.X86.Avx;
@@ -11,22 +12,25 @@ public class CoffeeContoller : MonoBehaviour
     public AudioClip _BrewSound;
     public AudioClip _buttonClickSound;
 
-    public GameObject cup;
-    public GameObject fullCup;
+    public GameObject fluid;
+    public CoffeeGiveTriger coffeeGiveTriger;
+    public HintsController hints;
 
     [Header("Triggers")]
     public CupTrigger cupTrigger;
-    public DispenserTrigger dispenserTrigger;
+    public SnapPoint dispenserSnap;
     public DispenserTrigger2 dispenserTrigger2;
     public GrinderTrigger grinderTrigger;
 
     private Renderer _glowButRenderer;
     private Outline[] outlineComponents;
     private AudioSource _AudioSource;
+    private bool shouldShowHints = true;
 
     private bool cupIn;
     public enum CoffeeState
     {
+        None,
         SelectCup,
         PlaceCupOnMachine,
         MoveDispenserToGrinder,
@@ -38,7 +42,7 @@ public class CoffeeContoller : MonoBehaviour
         GiveCoffee
     }
 
-    public CoffeeState currentState = CoffeeState.SelectCup;
+    public CoffeeState currentState = CoffeeState.None;
     private bool isButtonPressed;
 
     private void Start()
@@ -46,37 +50,50 @@ public class CoffeeContoller : MonoBehaviour
         _glowButRenderer = glowButton.GetComponent<Renderer>();
         outlineComponents = FindObjectsOfType<Outline>();
         _AudioSource = GetComponent<AudioSource>();
-        StartCoroutine(CoffeeGameLoop());
+        DisableAllHighlights();
+    }
 
+    public void StartCoffeeMaking()
+    {
+        StartCoroutine(CoffeeGameLoop());
     }
 
     private IEnumerator CoffeeGameLoop()
     {
         UpdateState(CoffeeState.SelectCup);
+        if (shouldShowHints) hints.showHint("Поместите любую чашку помеченную зелёным в кофе-машину");
 
         yield return new WaitUntil(() => cupTrigger.IsCupIn());
         SetButtonColor(new Color(255, 200, 0));
         UpdateState(CoffeeState.MoveDispenserToGrinder);
+        if (shouldShowHints) hints.showHint("Возьмите ложку и зачерпните кофе из Гриндера");
 
         yield return new WaitUntil(() => grinderTrigger.IsSpoonIn());
         UpdateState(CoffeeState.CollectCoffee);
+        if (shouldShowHints) hints.showHint("Насыпте кофе в портафильтер");
 
-        yield return new WaitUntil(() => dispenserTrigger2.IsSpoonIn());
+        yield return new WaitUntil(() => dispenserSnap.IsSnapped());
         dispenserTrigger2.SetSpoonIn(false);
         SetButtonColor(new Color(255, 200, 0));
         UpdateState(CoffeeState.ReturnDispenserToMachine);
+        if (shouldShowHints) hints.showHint("Насыпте кофе в портафильтер");
 
         yield return new WaitUntil(() => isButtonPressed);
         UpdateState(CoffeeState.BrewCoffee);
         isButtonPressed = false;
         SetButtonColor(new Color(255, 100, 0));
+
         yield return new WaitWhile(() => _AudioSource.isPlaying);
+        fluid.SetActive(true);
         PlaySound(_BrewSound);
+
         yield return new WaitUntil(() => !_AudioSource.isPlaying);
+        fluid.SetActive(false);
         SetButtonColor(new Color(0, 255, 0));
-        cup.SetActive(false);
-        fullCup.SetActive(true);
+        cupTrigger.FillCup();
         UpdateState(CoffeeState.Finish);
+        yield return new WaitUntil(() => IsCoffeeDone());
+        UpdateState(CoffeeState.GiveCoffee);
         yield break;
     }
 
@@ -100,7 +117,6 @@ public class CoffeeContoller : MonoBehaviour
             case CoffeeState.MoveDispenserToGrinder:
                 HighlightObjectWithTag("Spoon");
                 HighlightObjectWithTag("GrinderWafla");
-                HighlightObjectWithTag("Dispenser");
                 break;
 
             case CoffeeState.CollectCoffee:
@@ -113,10 +129,14 @@ public class CoffeeContoller : MonoBehaviour
                 break;
 
             case CoffeeState.BrewCoffee:
-                HighlightObjectWithTag("Cup");
+                HighlightObjectWithTag("CupFilled");
+                break;
+            case CoffeeState.Finish:
+                HighlightObjectWithTag("CupFilled");
+                
                 break;
 
-            case CoffeeState.Finish:
+            case CoffeeState.GiveCoffee:
                 DisableAllHighlights();
                 break;
         }
@@ -162,4 +182,9 @@ public class CoffeeContoller : MonoBehaviour
         _AudioSource.Play();
     }
 
+
+    public bool IsCoffeeDone()
+    {
+        return (coffeeGiveTriger.IsCoffeeIn() && (currentState == CoffeeState.GiveCoffee));
+    }
 }

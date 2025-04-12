@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     public HandbookController handbookController;
     public HintsController hints;
     public TimerController timer;
+    public CoffeeContoller CoffeeContoller;
 
     public string playerName;
     public GameObject[] Npcs;
@@ -92,11 +93,14 @@ public class PlayerController : MonoBehaviour
                     dialogueController.StartDialogue(_currentNpc.getOrderDialogue(), _currentNpc);
                     break;
                 case 1:
-                    timer.Pause();
-                    uiController.openUI(UiType.Dialogue);
-                    dialogueController.StartDialogue(_currentNpc.getDoneDialogue(), _currentNpc);
+                    Debug.Log("test");
+                    if (CoffeeContoller.IsCoffeeDone()) {
+                        timer.Pause();
+                        uiController.openUI(UiType.Dialogue);
+                        dialogueController.StartDialogue(_currentNpc.getDoneDialogue(), _currentNpc);
+                    }
                     break;
-                
+
             }
         }
     }
@@ -108,6 +112,7 @@ public class PlayerController : MonoBehaviour
             {
                 case 1:
                     timer.Begin();
+                    CoffeeContoller.StartCoffeeMaking();
                     hints.showHint("Теперь готовьте кофе! \n <i>Перейдите к столу с кофе-машиной", 10, BindKey.A);
                     _currentNpc.stageChanged = false; // Костыль для выполнения 1 раз
                     break;
