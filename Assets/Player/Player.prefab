@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1287067326060126996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7067316755433971730}
+  - component: {fileID: 7476051789161382225}
+  m_Layer: 0
+  m_Name: Hand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7067316755433971730
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287067326060126996}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1570712803306517402}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7476051789161382225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287067326060126996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a3c2d1f31d984ca02cee1407788c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _camera: {fileID: 408665314065729737}
+  tags:
+  - Dragable
 --- !u!1 &4195940389825933965
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +80,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3798839390171763211}
+  - {fileID: 7067316755433971730}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1199447482707549730
@@ -51,11 +99,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
   speed: 1
-  rotationSmoothness: 2
+  rotationSmoothness: 5
   currentKnotIndex: 0
   isMoving: 0
+  automaticMode: 0
 --- !u!114 &1903055479018832084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,8 +123,9 @@ MonoBehaviour:
   timer: {fileID: 0}
   playerName: "\u041B\u0443\u043A\u0430\u0441 (\u0412\u044B)"
   Npcs:
-  - {fileID: 0}
+  - {fileID: 4607572274710616592, guid: bb3479c3e8d75bb49a4ad630093a98e7, type: 3}
   clientCounter: {fileID: 0}
+  npcPoint: {fileID: 0}
   moveSound: {fileID: 0}
   endScene: {fileID: 0}
 --- !u!82 &3207123062473396946

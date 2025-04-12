@@ -42,7 +42,6 @@ public class SplineMovement : MonoBehaviour
     {
         if (automaticMode && !isMoving)
         {
-            Debug.Log(isForwardDirection);
             if (isForwardDirection)
             {
                 if (currentKnotIndex < knots.Length - 1)
@@ -66,7 +65,6 @@ public class SplineMovement : MonoBehaviour
     }
     public void StartAutomaticMovement(bool forward)
     {
-        Debug.Log("Live");
         automaticMode = true;
         isForwardDirection = forward;
         currentKnotIndex = forward ? 0 : knots.Length - 1;

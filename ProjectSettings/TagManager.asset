@@ -12,6 +12,8 @@ TagManager:
   - GrinderWafla
   - Machine
   - Button
+  - Dragable
+  - AttachedDispenser
   layers:
   - Default
   - TransparentFX
@@ -20,7 +22,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Dragable
   - 
   - 
   - 

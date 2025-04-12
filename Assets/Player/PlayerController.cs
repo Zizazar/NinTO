@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
         _nextPosAction = InputSystem.actions.FindAction("NextPosition");
         _prevPosAction = InputSystem.actions.FindAction("PreviousPosition");
-        _grabAction = InputSystem.actions.FindAction("PreviousPosition");
+        _grabAction = InputSystem.actions.FindAction("Grab");
         _HandbookAction = InputSystem.actions.FindAction("Handbook");
         _InteractAction = InputSystem.actions.FindAction("Interact");
         _NextDialogAction = InputSystem.actions.FindAction("NextDialogue");
@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
         if (_prevPosAction.IsPressed()) _splineMovement.MoveToPreviousKnot(); // И сюда
 
         if (_grabAction.IsPressed()) return;
+        
 
         if (_HandbookAction.WasPressedThisFrame()) uiController.toggleUI(UiType.Handbook);
 
@@ -97,7 +98,6 @@ public class PlayerController : MonoBehaviour
                     break;
                 
             }
-            Debug.Log(_currentNpc.Stage);
         }
     }
 
