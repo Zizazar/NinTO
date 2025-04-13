@@ -28,10 +28,12 @@ public class GrabController : MonoBehaviour
 
 
     private InputAction _GrabDistanceAction;
+    private InputAction _GrabDistanceActionKeyboard;
 
     private void Start()
     {
         _GrabDistanceAction = InputSystem.actions.FindAction("GrabDistance");
+        _GrabDistanceActionKeyboard = InputSystem.actions.FindAction("GrabDistanceKeyboard");
     }
 
     void Update()
@@ -133,11 +135,12 @@ public class GrabController : MonoBehaviour
         if (grabbedObject)
         {
             float scroll = _GrabDistanceAction.ReadValue<Vector2>().y;
+            float input = _GrabDistanceActionKeyboard.ReadValue<Vector2>().y;
             currentGrabDistance = Mathf.Clamp(
-                currentGrabDistance - scroll * scrollSensitivity,
-                minDistance,
-                maxDistance
-            );
+            currentGrabDistance + (scroll * scrollSensitivity + input * _keyboardSensitivity * Time.fixedDeltaTime),
+            minDistance,
+            maxDistance
+        );
         }
     }
 

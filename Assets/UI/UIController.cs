@@ -90,7 +90,7 @@ public class UIController : MonoBehaviour
             MainMixer.SetFloat("Radio", Mathf.Lerp(0, -40, _image.color.a));
             yield return null;
             
-            _image.color += new Color(0,0,0, 0.001f);
+            _image.color += new Color(0,0,0, 0.005f);
         }
 
         SceneManager.LoadScene(2);

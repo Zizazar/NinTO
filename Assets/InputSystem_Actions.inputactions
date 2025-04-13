@@ -85,6 +85,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "GrabDistanceKeyboard",
+                    "type": "Value",
+                    "id": "1d848be0-3f9b-4246-89f8-2b92d77501fb",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -210,13 +219,24 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "",
+                    "id": "6baf2057-07ec-4ac1-8d79-7d2789e18084",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrabDistance",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "2D Vector",
                     "id": "96c7bf7c-d176-456a-97bd-8bc73baf87d8",
                     "path": "2DVector(mode=2)",
                     "interactions": "",
-                    "processors": "ScaleVector2(x=2,y=2)",
+                    "processors": "",
                     "groups": "",
-                    "action": "GrabDistance",
+                    "action": "GrabDistanceKeyboard",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -227,7 +247,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GrabDistance",
+                    "action": "GrabDistanceKeyboard",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -238,42 +258,9 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "GrabDistance",
+                    "action": "GrabDistanceKeyboard",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "303aae8d-df82-4e66-8e9d-32af13e05e5a",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GrabDistance",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "f228df00-a2dc-400a-81df-bab32d6ef74b",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GrabDistance",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "6baf2057-07ec-4ac1-8d79-7d2789e18084",
-                    "path": "<Mouse>/scroll",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GrabDistance",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },

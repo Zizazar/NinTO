@@ -1968,6 +1968,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1880722878}
     - target: {fileID: 7585850330323586860, guid: 08f09d5de9cbf9a4f84fd3aef2546754, type: 3}
+      propertyPath: minDistance
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7585850330323586860, guid: 08f09d5de9cbf9a4f84fd3aef2546754, type: 3}
       propertyPath: coffeeContoller
       value: 
       objectReference: {fileID: 2021708406}
