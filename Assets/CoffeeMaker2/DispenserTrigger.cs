@@ -14,7 +14,6 @@ public class DispenserTrigger : MonoBehaviour
             rb.isKinematic = true;
             other.transform.position = _point.position;
             other.transform.rotation = _point.rotation;
-            other.gameObject.tag = "AttachedDispenser";
             _isDispenserIn = true;
         }
     }

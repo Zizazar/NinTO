@@ -36,17 +36,14 @@ public class GrabController : MonoBehaviour
 
     void HandleMouseInput()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (grabbedObject == null)
+            if (Input.GetMouseButtonDown(0) && grabbedObject == null)
             {
                 TryGrabObject();
             }
-            else if (grabbedObject != null)
+            if (Input.GetMouseButtonUp(0) && grabbedObject != null)
             {
                 ReleaseObject();
             }
-        }
     }
 
     void TryGrabObject()
@@ -61,7 +58,7 @@ public class GrabController : MonoBehaviour
                 grabbedObject = hit.collider.GetComponent<Rigidbody>();
                 if (grabbedObject)
                 {
-                    currentGrabDistance = Vector3.Distance(transform.position, hit.point);
+                    currentGrabDistance = Vector3.Distance(transform.position, hit.point)/2; // костыль какой то
                     currentGrabDistance = Mathf.Clamp(currentGrabDistance, minDistance, maxDistance);
 
                     // Проверяем, был ли объект присоединен

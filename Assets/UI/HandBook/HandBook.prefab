@@ -937,11 +937,11 @@ MonoBehaviour:
   m_Content: {fileID: 3330511242718777591}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 2
-  m_Elasticity: 0.1
-  m_Inertia: 0
+  m_MovementType: 1
+  m_Elasticity: 0.01
+  m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 0.001
+  m_ScrollSensitivity: 0.01
   m_Viewport: {fileID: 1824368730582467395}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -2503,8 +2503,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   npcsData:
-  - {fileID: 11400000, guid: dfabefd469298ab4aaf7209982dbc3e7, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 0391176b72863174d81ad2a3ae951553, type: 2}
+  - {fileID: 11400000, guid: ec447720547f79740ad88df2ee95b98e, type: 2}
+  - {fileID: 11400000, guid: da43c153431bedf40a29a71d39d50921, type: 2}
+  - {fileID: 11400000, guid: e5e3916a8223cc247849c855982804f2, type: 2}
   npcCards:
   - {fileID: 4344718589366291752}
   - {fileID: 9186351668909877107}
@@ -2722,7 +2724,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6143233535924702529}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -33,7 +33,7 @@ public class TimerController : MonoBehaviour
 
     private void UpdateUI()
     {
-        textComp.text = GetTime().ToString(@"mm\:ss\.fff");
+        textComp.text = ((GetTimeSeconds() > 40) ? "<color=red>": "") + GetTime().ToString(@"mm\:ss\.fff");
     }
 
     public void Begin()
@@ -65,7 +65,7 @@ public class TimerController : MonoBehaviour
         }
     }
 
-    public void Reset()
+    public void ResetTime()
     {
         elapsedRunningTime = 0f;
         runningStartTime = 0f;

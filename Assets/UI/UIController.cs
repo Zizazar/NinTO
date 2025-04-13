@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
     [SerializeField] private PlayerController _pl;
     public GameObject dialogueUI;
     public GameObject handbookUI;
+    public GameObject handbookUIButton;
     public GameObject popupUI;
     public bool popupOk = false;
     
@@ -20,6 +20,7 @@ public class UIController : MonoBehaviour
         {
             case UiType.Dialogue: dialogueUI.SetActive(false); break;
             case UiType.Handbook: handbookUI.SetActive(false); _pl.PlayPlayerSound(HandbookCloseClip); break;
+            case UiType.HandbookChoose: handbookUI.SetActive(false); _pl.PlayPlayerSound(HandbookCloseClip); break;
             case UiType.Popup: popupUI.SetActive(false); break;
         }
     }
@@ -29,6 +30,7 @@ public class UIController : MonoBehaviour
         {
             case UiType.Dialogue: dialogueUI.SetActive(true); break;
             case UiType.Handbook: handbookUI.SetActive(true); _pl.PlayPlayerSound(HandbookOpenClip); break;
+            case UiType.HandbookChoose: handbookUI.SetActive(true); handbookUIButton.SetActive(true); break;
             case UiType.Popup: popupUI.SetActive(true); break;
         }
     }
@@ -54,6 +56,9 @@ public class UIController : MonoBehaviour
     public void PopupChoose(bool choose)
     {
         popupOk = choose;
+        if (popupOk) {
+            SceneManager.LoadScene(0);
+        }
         closeUI(UiType.Popup);
     }
 
@@ -70,5 +75,6 @@ public enum UiType
     None,
     Dialogue,
     Handbook,
+    HandbookChoose,
     Popup
 }

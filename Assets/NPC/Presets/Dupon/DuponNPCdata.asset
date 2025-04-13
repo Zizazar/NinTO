@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d30f7514df71e479d5a6b5f3bdebce, type: 3}
+  m_Name: DuponNPCdata
+  m_EditorClassIdentifier: 
+  npcName: "\u041C\u0435\u0441\u044C\u0435 \u0414\u044E\u043F\u043E\u043D"
+  npcType: 0
+  coffeeType: 2
+  handbookCardId: 2
+  orderDialog: {fileID: 11400000, guid: 4d560b3091701464eb5667ea6606849c, type: 2}
+  doneDialog: {fileID: 11400000, guid: 30eab6cc117b39f4eb7064be7e78588b, type: 2}

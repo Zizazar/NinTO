@@ -43,41 +43,48 @@ public class DialogueController : MonoBehaviour
         playerName = playerController.playerName;
     }
 
-    public void StartDialogue(BasicDialog dialogue, NpcController npcController)
+    public void StartDialogue(BasicDialog dialogue, NpcController npcController = null)
     {
         dialogueInProcess = true;
         currentPhrases.Clear();
-        _npcController = npcController;
-
-        if (dialogue is OrderDialog)
+        if (dialogue is EndDialog)
         {
-            OrderDialog orderDialogue = (OrderDialog)dialogue;
-            addPhrasesToQueue(orderDialogue.phrases);
+            addPhrasesToQueue((dialogue as EndDialog).phrases);
         }
-
-        if (dialogue is DoneDialog)
+        else
         {
-            DoneDialog doneDialogue = (DoneDialog)dialogue;
-            if (wrongCoffee)
+            _npcController = npcController;
+
+            if (dialogue is OrderDialog)
             {
-                addPhrasesToQueue(doneDialogue.wrongCoffeePhrases);
+                OrderDialog orderDialogue = (OrderDialog)dialogue;
+                addPhrasesToQueue(orderDialogue.phrases);
             }
-            else
+
+            if (dialogue is DoneDialog)
             {
-                switch (coffeeQuality) // Лень думать
+                DoneDialog doneDialogue = (DoneDialog)dialogue;
+                if (wrongCoffee)
                 {
-                    case 0: 
-                        addPhrasesToQueue(doneDialogue.badCoffeeTimePhrases);
-                        break;
-                    case 1:
-                        addPhrasesToQueue(doneDialogue.badCoffeeTimePhrases);
-                        addPhrasesToQueue(doneDialogue.normCoffeeTimePhrases);
-                        break;
-                    case 2:
-                        addPhrasesToQueue(doneDialogue.badCoffeeTimePhrases);
-                        addPhrasesToQueue(doneDialogue.normCoffeeTimePhrases);
-                        addPhrasesToQueue(doneDialogue.perfectCoffeeTimePhrases);
-                        break;
+                    addPhrasesToQueue(doneDialogue.wrongCoffeePhrases);
+                }
+                else
+                {
+                    switch (coffeeQuality) // Лень думать
+                    {
+                        case 0:
+                            addPhrasesToQueue(doneDialogue.badCoffeeTimePhrases);
+                            break;
+                        case 1:
+                            addPhrasesToQueue(doneDialogue.badCoffeeTimePhrases);
+                            addPhrasesToQueue(doneDialogue.normCoffeeTimePhrases);
+                            break;
+                        case 2:
+                            addPhrasesToQueue(doneDialogue.badCoffeeTimePhrases);
+                            addPhrasesToQueue(doneDialogue.normCoffeeTimePhrases);
+                            addPhrasesToQueue(doneDialogue.perfectCoffeeTimePhrases);
+                            break;
+                    }
                 }
             }
         }
@@ -89,7 +96,7 @@ public class DialogueController : MonoBehaviour
         foreach (Phrase phrase in phrases)
         {
             currentPhrases.Enqueue(phrase);
-            _npcController.saidPhrases += ((phrase.speaker == CharacterType.Player) ? "<i></b><color=#000b>" : "</i><b><color=#000>") + phrase.text + "\n";
+            if (_npcController) _npcController.saidPhrases += ((phrase.speaker == CharacterType.Player) ? "<i></b><color=#000b>" : "</i><b><color=#000>") + phrase.text + "\n";
         }
     }
 
@@ -119,9 +126,13 @@ public class DialogueController : MonoBehaviour
         void EndDialogue()
         {
             dialogueInProcess = false;
+        if (_npcController)
+        {
             _npcController.Stage++; // Переход в 1 и 2 состояние
             _npcController.stageChanged = true;
-            uiController.closeUI(UiType.Dialogue);
+        }
+        uiController.closeUI(UiType.Dialogue);
+
         }
 
     public void DialogueNext()

@@ -1,10 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using static CoffeeMakerSystem.CoffeeMakerController;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class CoffeeContoller : MonoBehaviour
 {
@@ -60,6 +55,8 @@ public class CoffeeContoller : MonoBehaviour
 
     private IEnumerator CoffeeGameLoop()
     {
+
+        yield return new WaitForSeconds(4f);
         UpdateState(CoffeeState.SelectCup);
         if (shouldShowHints) hints.showHint("Поместите любую чашку помеченную зелёным в кофе-машину");
 
@@ -74,9 +71,9 @@ public class CoffeeContoller : MonoBehaviour
 
         yield return new WaitUntil(() => dispenserSnap.IsSnapped());
         dispenserTrigger2.SetSpoonIn(false);
-        SetButtonColor(new Color(255, 200, 0));
+        SetButtonColor(new Color(255, 200, 100));
         UpdateState(CoffeeState.ReturnDispenserToMachine);
-        if (shouldShowHints) hints.showHint("Насыпте кофе в портафильтер");
+        if (shouldShowHints) hints.showHint("Нажмите кнопку на кофемашине, чтобы сварить кофе");
 
         yield return new WaitUntil(() => isButtonPressed);
         UpdateState(CoffeeState.BrewCoffee);
@@ -87,13 +84,17 @@ public class CoffeeContoller : MonoBehaviour
         fluid.SetActive(true);
         PlaySound(_BrewSound);
 
-        yield return new WaitUntil(() => !_AudioSource.isPlaying);
+        yield return new WaitForSeconds(6);
         fluid.SetActive(false);
         SetButtonColor(new Color(0, 255, 0));
         cupTrigger.FillCup();
         UpdateState(CoffeeState.Finish);
-        yield return new WaitUntil(() => IsCoffeeDone());
+        if (shouldShowHints) hints.showHint("Возьмите чашку с готовым кофе и отнесите клиенту", 7, BindKey.D);
+
+        yield return new WaitUntil(() => coffeeGiveTriger.IsCoffeeIn());
         UpdateState(CoffeeState.GiveCoffee);
+        if (shouldShowHints) hints.showHint("Отдайте кофе клиенту", 4, BindKey.E);
+        shouldShowHints = false;
         yield break;
     }
 
@@ -147,9 +148,11 @@ public class CoffeeContoller : MonoBehaviour
     {
         foreach (Outline outline in outlineComponents)
         {
-            if (outline.gameObject.CompareTag(tag))
+
+            if (outline && outline.gameObject.CompareTag(tag))
             {
-                outline.enabled = true;
+                
+                    outline.enabled = true;
             }
         }
     }
@@ -158,7 +161,8 @@ public class CoffeeContoller : MonoBehaviour
     {
         foreach (Outline outline in outlineComponents)
         {
-            outline.enabled = false;
+            if (outline != null)
+                outline.enabled = false;
         }
     }
 
@@ -185,6 +189,8 @@ public class CoffeeContoller : MonoBehaviour
 
     public bool IsCoffeeDone()
     {
+        Debug.Log(coffeeGiveTriger.IsCoffeeIn());
+        Debug.Log(currentState);
         return (coffeeGiveTriger.IsCoffeeIn() && (currentState == CoffeeState.GiveCoffee));
     }
 }

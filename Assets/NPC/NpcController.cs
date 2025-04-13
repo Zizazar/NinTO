@@ -14,8 +14,8 @@ public class NpcController : MonoBehaviour
     public bool stageChanged = false;
 
     private Animator _animator;
-    private SplineMovement _splineMovement;
-    private bool IsLeaving = false;
+    public SplineMovement _splineMovement;
+    public bool IsLeaving = false;
 
     void Start()
     {

@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.Burst.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public GameObject[] Npcs;
     public TMP_Text clientCounter;
     public Transform npcPoint;
+    public EndDialog endDialog;
 
 
 
@@ -34,12 +33,11 @@ public class PlayerController : MonoBehaviour
     private InputAction _NextDialogAction;
 
     private int _clientsCount;
-    private NpcController _currentNpc;
+   [SerializeField] private NpcController _currentNpc;
     private AudioSource _audioSource;
 
     [Header("Sounds")]
     [SerializeField] private AudioClip moveSound;
-    [SerializeField] private SceneAsset endScene;
 
 
     void Start()
@@ -55,7 +53,7 @@ public class PlayerController : MonoBehaviour
         _NextDialogAction = InputSystem.actions.FindAction("NextDialogue");
 
         NextClient();
-        hints.showHint("Когда к вам подайдёт клиент", 8, BindKey.E);
+        hints.showHint("Когда к вам подойдет клиент", 8, BindKey.E);
     }
 
     void Update()
@@ -93,10 +91,11 @@ public class PlayerController : MonoBehaviour
                     dialogueController.StartDialogue(_currentNpc.getOrderDialogue(), _currentNpc);
                     break;
                 case 1:
-                    Debug.Log("test");
                     if (CoffeeContoller.IsCoffeeDone()) {
+                        CoffeeContoller.coffeeGiveTriger.Disintegrate();
                         timer.Pause();
                         uiController.openUI(UiType.Dialogue);
+                        dialogueController.coffeeQuality = ((timer.GetTimeSeconds() > 40) ? 1:2) ; // !! Лимит времени приготовления
                         dialogueController.StartDialogue(_currentNpc.getDoneDialogue(), _currentNpc);
                     }
                     break;
@@ -117,13 +116,15 @@ public class PlayerController : MonoBehaviour
                     _currentNpc.stageChanged = false; // Костыль для выполнения 1 раз
                     break;
                 case 2:
-                    hints.showHint("Запись о клиенте добавленна в блакнот.", 10, BindKey.J);
+                    hints.showHint("Запись о клиенте добавленна в блокнот.", 10, BindKey.J);
                     addNpcToHandboook();
                     _currentNpc.Leave();
                     _currentNpc.stageChanged = false;
+                    StartCoroutine(WaitForNextNpc(8)); // следующий через 5 сек
                     break;
             }
         }
+
     }
 
     public void GiveCoffee()
@@ -138,12 +139,28 @@ public class PlayerController : MonoBehaviour
         handbookController.npcPhrases.Add(_currentNpc.saidPhrases);
     }
 
+    private IEnumerator EndDialogSequence()
+    {
+        uiController.openUI(UiType.Dialogue);
+        dialogueController.StartDialogue(endDialog);
+        yield return new WaitUntil(() => !dialogueController.dialogueInProcess);
+        uiController.openUI(UiType.HandbookChoose);
+    }
+
     private void NextClient()
     {
-        _clientsCount++;
-        
-        GameObject npc = Instantiate(Npcs[_clientsCount - 1], npcPoint);
-        _currentNpc = npc.GetComponent<NpcController>();
+        timer.ResetTime();
+        if (handbookController.openedNpcsCount > 3)
+        {
+            StartCoroutine(EndDialogSequence());
+        }
+        else
+        {
+            _clientsCount++;
+
+            GameObject npc = Instantiate(Npcs[_clientsCount - 1], npcPoint);
+            _currentNpc = npc.GetComponent<NpcController>();
+        }
     }
 
     public void PlayPlayerSound(AudioClip audioClip)
@@ -160,5 +177,11 @@ public class PlayerController : MonoBehaviour
     public void EndGame()
     {
         SceneManager.LoadScene("End");
+    }
+
+    private IEnumerator WaitForNextNpc(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        NextClient();
     }
 }

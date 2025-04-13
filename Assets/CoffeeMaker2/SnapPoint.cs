@@ -1,9 +1,11 @@
+using System.Linq;
 using UnityEngine;
 
 public class SnapPoint : MonoBehaviour
 {
     public Rigidbody rigidbody;
     public GrabController grabController;
+    public string[] filterTags;
 
     private bool _isSnapped;
 
@@ -14,7 +16,7 @@ public class SnapPoint : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if (grabController.grabbedObject != null &&
+        if (filterTags.Contains(other.tag) && grabController.grabbedObject != null &&
             other.attachedRigidbody == grabController.grabbedObject)
         {
             grabController.SetActiveSnapPoint(this);
