@@ -1,14 +1,20 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Camera))]
 public class GrabController : MonoBehaviour
 {
     public CoffeeContoller coffeeContoller;
+    public AudioSource audioSource;
+    public AudioClip connect;
+    public AudioClip grabClip;
+
     [Header("Settings")]
     public string[] grabableTags;
     public float scrollSensitivity = 2f;
+    public float _keyboardSensitivity = 3f;
     public float minDistance = 1f;
     public float maxDistance = 10f;
     public float moveForce = 500f;
@@ -19,6 +25,14 @@ public class GrabController : MonoBehaviour
     private float currentGrabDistance;
     private SnapPoint activeSnapPoint;
     private FixedJoint snapJoint;
+
+
+    private InputAction _GrabDistanceAction;
+
+    private void Start()
+    {
+        _GrabDistanceAction = InputSystem.actions.FindAction("GrabDistance");
+    }
 
     void Update()
     {
@@ -39,11 +53,18 @@ public class GrabController : MonoBehaviour
             if (Input.GetMouseButtonDown(0) && grabbedObject == null)
             {
                 TryGrabObject();
+                audioSource.clip = grabClip;
+                audioSource.pitch = 1f;
+                audioSource.Play();
             }
             if (Input.GetMouseButtonUp(0) && grabbedObject != null)
             {
                 ReleaseObject();
-            }
+                audioSource.clip = grabClip;
+                audioSource.pitch = 0.8f;
+                audioSource.Play();
+        }
+
     }
 
     void TryGrabObject()
@@ -111,7 +132,7 @@ public class GrabController : MonoBehaviour
     {
         if (grabbedObject)
         {
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            float scroll = _GrabDistanceAction.ReadValue<Vector2>().y;
             currentGrabDistance = Mathf.Clamp(
                 currentGrabDistance - scroll * scrollSensitivity,
                 minDistance,
@@ -124,6 +145,9 @@ public class GrabController : MonoBehaviour
     {
         if (activeSnapPoint)
         {
+            audioSource.clip = connect;
+            audioSource.Play();
+
             grabbedObject.transform.position = activeSnapPoint.transform.position;
             grabbedObject.transform.rotation = activeSnapPoint.transform.rotation;
 

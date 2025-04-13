@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3012813408360532713}
   - component: {fileID: 3079621606022303177}
   - component: {fileID: 7585850330323586860}
+  - component: {fileID: 5297513279717574159}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -153,12 +154,28 @@ MonoBehaviour:
   - Spoon
   - CupFilled
   scrollSensitivity: 0.2
+  _keyboardSensitivity: 3
   minDistance: 0.1
   maxDistance: 1
   moveForce: 500
   maxVelocity: 2
   rotationSpeed: 2
   grabbedObject: {fileID: 0}
+--- !u!114 &5297513279717574159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026827939849300380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988351c850b3316418eb176ed0ddfaba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 1
+  maxAngle: 10
+  smoothTime: 0.2
 --- !u!1 &4195940389825933965
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,13 +249,15 @@ MonoBehaviour:
   handbookController: {fileID: 0}
   hints: {fileID: 0}
   timer: {fileID: 0}
+  CoffeeContoller: {fileID: 0}
   playerName: "\u041B\u0443\u043A\u0430\u0441 (\u0412\u044B)"
   Npcs:
   - {fileID: 4607572274710616592, guid: bb3479c3e8d75bb49a4ad630093a98e7, type: 3}
   clientCounter: {fileID: 0}
   npcPoint: {fileID: 0}
+  endDialog: {fileID: 0}
+  _currentNpc: {fileID: 0}
   moveSound: {fileID: 0}
-  endScene: {fileID: 0}
 --- !u!82 &3207123062473396946
 AudioSource:
   m_ObjectHideFlags: 0

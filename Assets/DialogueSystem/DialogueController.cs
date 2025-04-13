@@ -9,6 +9,7 @@ public class DialogueController : MonoBehaviour
 {
     public TMP_Text characterNameComp;
     public TMP_Text textComp;
+    public GameObject textHint;
     public float textSpeed = 0.01f;
     public PlayerController playerController;
     public UIController uiController;
@@ -173,5 +174,10 @@ public class DialogueController : MonoBehaviour
             }
         }
         textComp.text = text;
+    }
+
+    private void Update()
+    {
+        textHint.SetActive(IsCompleted());
     }
 }

@@ -32,6 +32,7 @@ public class HandbookController : MonoBehaviour
     {
         if (selectedNPC != -1 && selectedNPC != buttonId) npcCards[selectedNPC].GetComponent<Animator>().Play("Normal");
         selectedNPC = buttonId;
+        PlayerPrefs.SetInt("SelectedNPC", selectedNPC);
         Animator _anim = npcCards[buttonId].GetComponent<Animator>();
 
         _anim.Play("Pressed");

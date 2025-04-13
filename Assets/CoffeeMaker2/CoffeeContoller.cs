@@ -69,7 +69,7 @@ public class CoffeeContoller : MonoBehaviour
         UpdateState(CoffeeState.CollectCoffee);
         if (shouldShowHints) hints.showHint("Насыпте кофе в портафильтер");
 
-        yield return new WaitUntil(() => dispenserSnap.IsSnapped());
+        yield return new WaitUntil(() => dispenserSnap.IsSnapped() && dispenserTrigger2._coffee2.active);
         dispenserTrigger2.SetSpoonIn(false);
         SetButtonColor(new Color(255, 200, 100));
         UpdateState(CoffeeState.ReturnDispenserToMachine);
@@ -77,17 +77,19 @@ public class CoffeeContoller : MonoBehaviour
 
         yield return new WaitUntil(() => isButtonPressed);
         UpdateState(CoffeeState.BrewCoffee);
+        
         isButtonPressed = false;
         SetButtonColor(new Color(255, 100, 0));
 
         yield return new WaitWhile(() => _AudioSource.isPlaying);
         fluid.SetActive(true);
         PlaySound(_BrewSound);
-
+        dispenserTrigger2._coffee2.SetActive(false);
         yield return new WaitForSeconds(6);
         fluid.SetActive(false);
         SetButtonColor(new Color(0, 255, 0));
         cupTrigger.FillCup();
+
         UpdateState(CoffeeState.Finish);
         if (shouldShowHints) hints.showHint("Возьмите чашку с готовым кофе и отнесите клиенту", 7, BindKey.D);
 

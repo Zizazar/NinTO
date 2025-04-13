@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private InputAction _HandbookAction;
     private InputAction _InteractAction;
     private InputAction _NextDialogAction;
+    private InputAction _ExitAction;
 
     private int _clientsCount;
    [SerializeField] private NpcController _currentNpc;
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
         _HandbookAction = InputSystem.actions.FindAction("Handbook");
         _InteractAction = InputSystem.actions.FindAction("Interact");
         _NextDialogAction = InputSystem.actions.FindAction("NextDialogue");
+        _ExitAction = InputSystem.actions.FindAction("Exit");
 
         NextClient();
         hints.showHint("Когда к вам подойдет клиент", 8, BindKey.E);
@@ -65,9 +67,9 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
-        if (_nextPosAction.IsPressed()) {_splineMovement.MoveToNextKnot(); } // Добавить звук перемещения
+        if (_nextPosAction.IsPressed() && !dialogueController.dialogueInProcess) {_splineMovement.MoveToNextKnot(); } // Добавить звук перемещения
 
-        if (_prevPosAction.IsPressed()) _splineMovement.MoveToPreviousKnot(); // И сюда
+        if (_prevPosAction.IsPressed() && !dialogueController.dialogueInProcess) _splineMovement.MoveToPreviousKnot(); // И сюда
 
         if (_grabAction.IsPressed()) return;
         
@@ -77,6 +79,8 @@ public class PlayerController : MonoBehaviour
         if (_InteractAction.WasPressedThisFrame()) Interact();
 
         if (_NextDialogAction.WasPressedThisFrame()) dialogueController.DialogueNext();
+
+        if (_ExitAction.WasPressedThisFrame()) if (uiController.IsOppened(UiType.Handbook)) { uiController.closeUI(UiType.Handbook); } else { uiController.toggleUI(UiType.EscMenu); uiController.closeUI(UiType.Settings); };
     }
 
 
@@ -110,6 +114,7 @@ public class PlayerController : MonoBehaviour
             switch (_currentNpc.Stage)
             {
                 case 1:
+                    timer.ResetTime();
                     timer.Begin();
                     CoffeeContoller.StartCoffeeMaking();
                     hints.showHint("Теперь готовьте кофе! \n <i>Перейдите к столу с кофе-машиной", 10, BindKey.A);
@@ -149,7 +154,6 @@ public class PlayerController : MonoBehaviour
 
     private void NextClient()
     {
-        timer.ResetTime();
         if (handbookController.openedNpcsCount > 3)
         {
             StartCoroutine(EndDialogSequence());
