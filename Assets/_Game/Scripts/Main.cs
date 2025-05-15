@@ -1,9 +1,10 @@
+using System;
 using _Game.Legacy.DialogueSystem;
 using _Game.Scripts.NPC;
 using _Game.Scripts.Player;
+using _Game.Scripts.UI.Screens;
 using UnityEngine;
 using UnityEngine.Events;
-using DialogueController = _Game.Scripts.DialogueSystem.DialogueController;
 
 
 // <summary>
@@ -19,15 +20,12 @@ public class Main : MonoBehaviour
     [SerializeField] private GameObject[] npcs;
     
     [Header("References")]
-    [SerializeField] private DialogueController dialogueController;
-    [SerializeField] private UIController uiController;
-    
+    [SerializeField] private _Game.Scripts.UI.UIController uiController;
     
     // Ивенты
     [HideInInspector] public UnityEvent onNextNpc = new UnityEvent();
     [HideInInspector] public UnityEvent onNpcCome = new UnityEvent();
     
-    private int currentNpcIndex = -1;
     
     void Start()
     {
@@ -38,13 +36,19 @@ public class Main : MonoBehaviour
 
         G.ui = uiController;
         
-        
-        if (!dialogueController) Debug.LogError("Dialogue Controller not set");
-        G.dialogueController = dialogueController;
-        
         // G.player = SpawnPlayer();
 
         G.currentNpc = SpawnNextNPC();
+    }
+
+    private void Update()
+    {
+        
+        // TEST 
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            uiController.ToggleScreen<HandbookScreen>();
+        }
     }
 
     private PlayerController SpawnPlayer()
@@ -55,8 +59,8 @@ public class Main : MonoBehaviour
 
     private NpcController SpawnNextNPC()
     {
-        currentNpcIndex++;
-        NpcController newNpc = Instantiate(npcs[currentNpcIndex]).GetComponent<NpcController>();
+        G.currentNpcIndex++;
+        NpcController newNpc = Instantiate(npcs[G.currentNpcIndex]).GetComponent<NpcController>();
 
         newNpc.pathPositions = new Vector3[npcPathRoot.transform.childCount];
         for (int i = 0; i < npcPathRoot.transform.childCount; i++)

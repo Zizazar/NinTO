@@ -1,3 +1,4 @@
+using _Game.Scripts.UI.Screens;
 using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
@@ -5,10 +6,10 @@ using XNode;
 public class DialogueNode : BaseNode
 {
     
-    [Input(ShowBackingValue.Never, ConnectionType.Override)] public BaseNode input;
+    [Input(ShowBackingValue.Never)] public BaseNode input;
     [Output(ShowBackingValue.Never, ConnectionType.Override)] public BaseNode output;
     
-    public G.Characters character;
+    public Characters character;
     [TextArea] public string text;
     public override void Execute()
     {
@@ -18,10 +19,10 @@ public class DialogueNode : BaseNode
             return;
         }
 
-        G.dialogueController.StartDialogueIfNotStarted();
+        dialogueGraph.DialogueScreen.StartDialogueIfNotStarted();
         
         dialogueGraph.currentDialogueNode = this;
-        G.dialogueController.PlayPhrase(text, G.GetCharacterName(character));
+        dialogueGraph.DialogueScreen.PlayPhrase(text, G.GetCharacterName(character));
     }
     
     public override object GetValue(NodePort port) {

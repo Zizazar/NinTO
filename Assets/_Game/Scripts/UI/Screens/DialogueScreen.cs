@@ -2,9 +2,9 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-namespace _Game.Scripts.DialogueSystem
+namespace _Game.Scripts.UI.Screens
 {
-    public class DialogueController : MonoBehaviour
+    public class DialogueScreen : BaseScreen
     {
         [SerializeField] private float textSpeed = 0.01f;
     
@@ -12,24 +12,26 @@ namespace _Game.Scripts.DialogueSystem
         [SerializeField] private TMP_Text characterNameComp;
         [SerializeField] private TMP_Text textComp;
         [SerializeField] private GameObject textHint;
-
-        public bool dialogueInProcess {get; private set; }
+        
+        [HideInInspector] public bool dialogueInProcess {get; private set; }
         private bool IsTyping = false;
-
-        public bool IsPhraseCompleted() => !IsTyping;
-    
+        
+        [HideInInspector] public bool IsPhraseCompleted => !IsTyping;
+        
+        
+        
         public void PlayPhrase(string text, string characterName)
         {
             characterNameComp.text = characterName;
             StartCoroutine(TypeText(text));
         }
-
+        // ReSharper disable Unity.PerformanceAnalysis
         public void StartDialogueIfNotStarted()
         {
             if (!dialogueInProcess)
             {
                 dialogueInProcess = true;
-                G.ui.Open(UiType.Dialogue);
+                Show();
             }
         }
 
@@ -38,11 +40,19 @@ namespace _Game.Scripts.DialogueSystem
             if (dialogueInProcess)
             {
                 dialogueInProcess = false;
-                G.ui.Close(UiType.Dialogue);
+                Hide();
             }
         }
 
 
+        
+
+        private void Update()
+        {
+            // Подсказка "нажать Пробел для продолжения"
+            textHint.SetActive(IsPhraseCompleted);
+        }
+        
         private IEnumerator TypeText(string text)
         {
             IsTyping = true;
@@ -62,12 +72,6 @@ namespace _Game.Scripts.DialogueSystem
                 }
             }
             textComp.text = text; // чтобы текст 100% отображался полностью
-        }
-
-        private void Update()
-        {
-            // Подсказка "нажать Пробел для продолжения"
-            textHint.SetActive(IsPhraseCompleted());
         }
     }
 }

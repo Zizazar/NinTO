@@ -1,4 +1,3 @@
-using _Game.Scripts.DialogueSystem;
 using _Game.Scripts.NPC;
 using _Game.Scripts.Player;
 using UnityEngine;
@@ -13,21 +12,20 @@ using UnityEngine;
 public static class G
 {
     public static Main main { get; set; }
-    public static UIController ui { get; set; }
+    public static _Game.Scripts.UI.UIController ui { get; set; }
     public static PlayerController player  { get; set; }
     public static NpcController currentNpc  { get; set; }
-    public static DialogueController dialogueController { get; set; }
-    
-    
     
     public static readonly Camera camera = Camera.main;
+
+    public static bool paused;
+    
+    public static int openedNpcsCount = 4;
+    
+    public static int currentNpcIndex = -1;
     
        
-    public enum Characters
-    {
-        Player,
-        Rose, Bill, Dupon, Mer 
-    }
+    
     public static string GetCharacterName(Characters character)
     {
         switch (character)
@@ -40,4 +38,10 @@ public static class G
             case Characters.Mer: return "Мэр";
         }
     }
+}
+
+public enum Characters
+{
+    Player,
+    Rose, Bill, Dupon, Mer 
 }

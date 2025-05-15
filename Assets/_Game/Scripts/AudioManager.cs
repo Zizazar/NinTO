@@ -1,6 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Через этот класс проигрывуются все звуки и музыка
+// Он просто спавнит AudioSource
+// В инспекторе надо добавить все звуки 
+// Потом проигрывать их так:
+//  AudioManager.Instance.PlayAudio("имя_звука")
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;

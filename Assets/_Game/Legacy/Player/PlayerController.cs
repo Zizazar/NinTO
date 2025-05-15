@@ -18,7 +18,7 @@ namespace _Game.Legacy.Player
         public DialogueController dialogueController;
         public HandbookController handbookController;
         public HintsController hints;
-        public TimerController timer;
+        // public TimerController timer;
         public CoffeeContoller CoffeeContoller;
 
         public string playerName;
@@ -103,9 +103,9 @@ namespace _Game.Legacy.Player
                     case 1:
                         if (CoffeeContoller.IsCoffeeDone()) {
                             CoffeeContoller.coffeeGiveTriger.Disintegrate();
-                            timer.Pause();
+                            // timer.Pause();
                             uiController.Open(UiType.Dialogue);
-                            dialogueController.coffeeQuality = ((timer.GetTimeSeconds() > 40) ? 1:2) ; // !! ����� ������� �������������
+                            // dialogueController.coffeeQuality = ((timer.GetTimeSeconds() > 40) ? 1:2) ; // !! ����� ������� �������������
                             dialogueController.StartDialogue(_currentNpc.getDoneDialogue(), _currentNpc);
                         }
                         break;
@@ -120,8 +120,8 @@ namespace _Game.Legacy.Player
                 switch (_currentNpc.Stage)
                 {
                     case 1:
-                        timer.ResetTime();
-                        timer.Begin();
+                        // timer.ResetTime();
+                        // timer.Begin();
                         CoffeeContoller.StartCoffeeMaking();
                         hints.showHint("������ �������� ����! \n <i>��������� � ����� � ����-�������", 10, BindKey.A);
                         _currentNpc.stageChanged = false; // ������� ��� ���������� 1 ���

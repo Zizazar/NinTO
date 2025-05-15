@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using _Game.Scripts.DialogueSystem;
+using _Game.Scripts.UI.Screens;
 using UnityEngine;
 using UnityEngine.Events;
 using XNode;
@@ -12,10 +10,13 @@ public class DialogueGraph : NodeGraph
     
     public DialogueNode currentDialogueNode;
     
+    public DialogueScreen DialogueScreen {get; private set;}
     
     public void Start()
     {
         onDialogueEnd ??= new UnityEvent();
+
+        DialogueScreen = G.ui.GetScreen<DialogueScreen>();
         
         StartNode startNode = (StartNode)nodes.Find(node => node is StartNode startNode);
         startNode.Start();
@@ -25,13 +26,13 @@ public class DialogueGraph : NodeGraph
     public void NextPhrase()
     {
         if (currentDialogueNode)
-            if (currentDialogueNode.NextNode() is not null)
+            if (currentDialogueNode.NextNode())
             {
                 currentDialogueNode.NextNode().Execute();
             }
             else
             {
-                G.dialogueController.EndDialogue();
+                DialogueScreen.EndDialogue();
             }
     }
 }

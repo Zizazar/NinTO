@@ -62,7 +62,7 @@ namespace _Game.Scripts.Player
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                _dialogueGraph.NextPhrase();
+                _dialogueGraph?.NextPhrase();
             }
         }
 
