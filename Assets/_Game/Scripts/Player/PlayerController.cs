@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DG.Tweening;
+using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,6 +13,7 @@ namespace _Game.Scripts.Player
         [Header("Interaction")]
         [SerializeField] private float interactionDistance = 3f;
         [SerializeField] private LayerMask interactableLayer;
+        [Tag]
         [SerializeField] private string[] grabableTags;
         
         [Header("Grab")]

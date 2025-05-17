@@ -262,7 +262,7 @@ MonoBehaviour:
   onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  currentDialogueNode: {fileID: -1716293540530162336}
+  currentDialogueNode: {fileID: -3493469356272221772}
 --- !u!114 &819885994994993230
 MonoBehaviour:
   m_ObjectHideFlags: 0

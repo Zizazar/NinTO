@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace _Game.Scripts.UI
@@ -10,8 +11,8 @@ namespace _Game.Scripts.UI
     // Можно открывать, закрывать переключать экраны и оверлеи передавая в метод класс 
     public class UIController : MonoBehaviour
     {
-        [SerializeField] private GameObject m_ScreensRoot;
-        [SerializeField] private GameObject m_OverlaysRoot;
+        [SerializeField, ReadOnly] private GameObject m_ScreensRoot;
+        [SerializeField, ReadOnly] private GameObject m_OverlaysRoot;
         
         private List<BaseScreen> _screens;
         //private List<BaseScreen> _openedScreens;

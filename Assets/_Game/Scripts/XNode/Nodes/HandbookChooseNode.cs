@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Game.Scripts.UI.Screens;
+using NaughtyAttributes;
 
 [NodeTint("#6CD9C8")]
     public class HandbookChooseNode : BaseNode

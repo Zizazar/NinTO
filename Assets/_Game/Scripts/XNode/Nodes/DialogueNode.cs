@@ -1,4 +1,5 @@
 using _Game.Scripts.UI.Screens;
+using NaughtyAttributes;
 using Unity.VisualScripting;
 using UnityEngine;
 using XNode;
@@ -10,7 +11,8 @@ public class DialogueNode : BaseNode
     [Output(ShowBackingValue.Never, ConnectionType.Override)] public BaseNode output;
     
     public Characters character;
-    [TextArea] public string text;
+    [ResizableTextArea]
+    public string text;
     public override void Execute()
     {
         if (graph is not DialogueGraph dialogueGraph)
