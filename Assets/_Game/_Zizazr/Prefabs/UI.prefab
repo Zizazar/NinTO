@@ -6321,7 +6321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 177ece7180a64b1088c6bbd61aeefab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  returnButton: {fileID: 16866829567162720}
+  resumeButton: {fileID: 16866829567162720}
   exitButton: {fileID: 4315243463775996278}
   menuButton: {fileID: 1536190749797742982}
 --- !u!1 &8480641533961609892

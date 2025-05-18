@@ -6,12 +6,12 @@
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
-                    "name": "Interact",
+                    "name": "Talk",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
@@ -33,16 +33,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Grab",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "c24e58e1-3be7-4148-983e-010f7b35e603",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": true
                 },
                 {
-                    "name": "Handbook",
+                    "name": "OpenHandbook",
                     "type": "Button",
                     "id": "1b8dd426-ce7e-4e60-811a-fe4c7e031034",
                     "expectedControlType": "",
@@ -60,16 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Deattach",
-                    "type": "Button",
-                    "id": "0b35f388-c2fe-45e4-9ee4-3e2a17d56ffb",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Exit",
+                    "name": "Pause",
                     "type": "Button",
                     "id": "a0cc9483-e7bc-41cb-814e-f36c7cb44dbb",
                     "expectedControlType": "",
@@ -104,7 +95,7 @@
                     "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Interact",
+                    "action": "Talk",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -115,7 +106,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Interact",
+                    "action": "Talk",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -170,7 +161,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Grab",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1ad5fd1a-b416-4eac-818d-f6d733858db3",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -181,7 +183,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Handbook",
+                    "action": "OpenHandbook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -198,23 +200,12 @@
                 },
                 {
                     "name": "",
-                    "id": "623e42a3-0e6e-4a98-8c4a-db4ba56c3b70",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Deattach",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "4c31ca43-0f56-4288-a731-d69b18f3f793",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Exit",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

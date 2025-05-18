@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using _Game.Legacy.Player;
+using _Game.Scripts.UI.Screens;
 using DG.Tweening;
 using NaughtyAttributes;
 using UnityEditor;
@@ -8,59 +10,61 @@ using UnityEngine.InputSystem;
 
 namespace _Game.Scripts.Player
 {
+    [RequireComponent(typeof(WaypointMover))]
     public class PlayerController : MonoBehaviour
     {
-        [Header("Interaction")]
-        [SerializeField] private float interactionDistance = 3f;
-        [SerializeField] private LayerMask interactableLayer;
-        [Tag]
-        [SerializeField] private string[] grabableTags;
-        
-        [Header("Grab")]
-        [SerializeField] private float maxVelocity = 15f;
-        [SerializeField] private float moveForce = 500f;
-        [SerializeField] private float rotationSpeed = 10f;
-        [SerializeField] private float maxDistance = 10f;
-        [SerializeField] private float minDistance = 0f;
-        [Space]
-        [SerializeField] private LayerMask groundLayer;
-        [Space]
-        [SerializeField] private float scrollSensitivity = 0.1f;
-        [SerializeField] private float keyboardSensitivity = 0.1f;
-        
-        
-        private Rigidbody grabbedObject;
-        private float currentGrabDistance;
-        
-        private InputAction _A_GrabDistance;
-        private InputAction _A_GrabDistanceKB;
+
+        private InputAction _startDialogueAction;
+        private InputAction _openHandbookAction;
         
         private DialogueGraph _dialogueGraph;
         
-        private Ray cameraRay => G.camera.ScreenPointToRay(Input.mousePosition);
+        private WaypointMover _waypointMover;
+        private ParallaxCamera _parallaxCamera;
+        private PlayerInteraction _playerInteraction;
         
         
-        private void Start()
+        private void Awake()
         {
-            _A_GrabDistance = InputSystem.actions.FindAction("GrabDistance");
-            _A_GrabDistanceKB = InputSystem.actions.FindAction("GrabDistanceKeyboard");
+            _startDialogueAction = InputSystem.actions.FindAction("Talk");
+            _openHandbookAction = InputSystem.actions.FindAction("OpenHandbook");
+            
+            _waypointMover = GetComponent<WaypointMover>();
+            _parallaxCamera = G.camera.GetComponent<ParallaxCamera>();
+            _playerInteraction = GetComponent<PlayerInteraction>();
         }
 
-        private void FixedUpdate()
+        private void OnEnable()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                TryInteract();
-                
-            }
-            else if (Input.GetMouseButtonUp(0) && grabbedObject != null)
-            {
-                ReleaseObject();
-                AudioManager.Instance.PlaySoundRandomPitch("grab", 0.5f, 0.8f);
-            }
+            _openHandbookAction.performed += OpenHandbook;
             
-            if (grabbedObject != null) MoveGrabbedObject();
-            ZoomLookHandler();
+            _startDialogueAction.Enable();
+            _openHandbookAction.Enable();
+            
+            _waypointMover.enabled = true;
+            _parallaxCamera.enabled = true;
+            _playerInteraction.enabled = true;
+        }
+
+        private void OnDisable()
+        {
+            _openHandbookAction.performed -= OpenHandbook;
+            
+            _startDialogueAction.Disable();
+            _openHandbookAction.Disable();
+            
+            _waypointMover.enabled = false;
+            _parallaxCamera.enabled = false;
+            _playerInteraction.enabled = false;
+        }
+
+        private void OpenHandbook(InputAction.CallbackContext ctx)
+        {
+            G.ui.ToggleScreen<HandbookScreen>();
+        }
+
+        private void Update()
+        {
             if (Input.GetKeyDown(KeyCode.V))
             {
                 _dialogueGraph = Resources.Load<DialogueGraph>("Dialogues/TestDialogue");
@@ -71,127 +75,5 @@ namespace _Game.Scripts.Player
                 _dialogueGraph?.NextPhrase();
             }
         }
-
-        private void ZoomLookHandler()
-        {
-            
-            // Приближение камеры к обьектам которые находяться на слое ZoomLook
-            if (Physics.SphereCast(G.camera.transform.position, 1, G.camera.transform.forward, out RaycastHit hit, 100, LayerMask.GetMask("ZoomLook")))
-            {
-                G.camera.fieldOfView = Mathf.Lerp(G.camera.fieldOfView, 30, 0.01f);
-            }
-            else
-            {
-                G.camera.fieldOfView = Mathf.Lerp(G.camera.fieldOfView, 60, 0.01f);
-            }
-        }
-
-        private void TryInteract()
-        {
-        
-            if (Physics.Raycast(cameraRay, out RaycastHit hit, interactionDistance, interactableLayer))
-                if (hit.collider.TryGetComponent(out IInteractable interactable))
-                {
-                    interactable.Interact();
-                } 
-                else if (grabableTags.Contains(hit.collider.tag)) // Если обьект перетаскиваемый
-                {
-                    grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
-                    GrabObject();
-                    
-                }
-        }
-
-        private float GetMaxDistance()
-        {
-            return Physics.Raycast(cameraRay, 
-                 out RaycastHit hit, 
-                 maxDistance, 
-                 groundLayer.value) 
-                ? hit.distance : maxDistance;
-        }
-        
-        void GrabObject()
-        {
-            AudioManager.Instance.PlaySoundRandomPitch("grab", 0.9f, 1.2f);
-            currentGrabDistance = Mathf.Clamp(
-                (cameraRay.origin - grabbedObject.transform.position).magnitude, 
-                minDistance, GetMaxDistance());
-            
-
-            if (grabbedObject.TryGetComponent<FixedJoint>(out var joint))
-                Destroy(joint);
-
-            grabbedObject.useGravity = false;
-            
-        }
-        
-        public void ReleaseObject()
-        {
-            grabbedObject.useGravity = true;
-            grabbedObject = null;
-        }
-        
-        void MoveGrabbedObject()
-        {
-            Vector3 targetPoint = cameraRay.GetPoint(currentGrabDistance);
-            Vector3 forceDirection = targetPoint - grabbedObject.position;
-
-            // Ограничение ускорения
-            Vector3 velocity = targetPoint - grabbedObject.position;
-            velocity = Vector3.ClampMagnitude(velocity, maxVelocity);
-            grabbedObject.velocity = velocity;
-
-            
-            // Перемещение назад вперёд
-            float scroll = _A_GrabDistance.ReadValue<Vector2>().y;
-            float input = _A_GrabDistanceKB.ReadValue<Vector2>().y;
-            currentGrabDistance = Mathf.Clamp(
-                currentGrabDistance + (scroll * scrollSensitivity + input * keyboardSensitivity * Time.fixedDeltaTime),
-                minDistance,
-                GetMaxDistance()
-            );
-            
-            grabbedObject.AddForce(forceDirection * (moveForce * Time.fixedDeltaTime));
-
-            // Поворачиваем вверх
-            Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            grabbedObject.angularVelocity = Vector3.zero;
-            
-            grabbedObject.MoveRotation(Quaternion.Slerp(
-                grabbedObject.rotation,
-                targetRotation,
-                rotationSpeed * Time.fixedDeltaTime
-            ));
-        }
-        
-        #if UNITY_EDITOR
-            private void OnDrawGizmos()
-            {
-                if (grabbedObject != null)
-                {
-                    Gizmos.color = Color.red;
-                    float distance = Vector3.Distance(G.camera.transform.position, grabbedObject.transform.position);
-                    Gizmos.DrawLine(
-                        G.camera.transform.position,
-                        grabbedObject.transform.position);
-                    
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawLine(
-                        G.camera.transform.position,
-                        cameraRay.GetPoint(currentGrabDistance));
-                    
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawLine(
-                        cameraRay.origin, 
-                        cameraRay.GetPoint(GetMaxDistance()));
-                    
-                    // Текст с дистанцией
-                    Vector3 midPoint = (G.camera.transform.position + grabbedObject.transform.position) / 2;
-                    Handles.Label(midPoint, "Distance: " + distance.ToString("F2"));
-                }
-            }
-        #endif
-        
     }
 }

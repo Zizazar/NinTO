@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4583901394637268836}
   - component: {fileID: 3692190262725729840}
   - component: {fileID: 681330724167477858}
+  - component: {fileID: 4574781088744891589}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -46,17 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff4a23184dec48e694e3878884be0a78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionDistance: 10
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 435
-  grabableTags:
-  - Dragable
-  maxVelocity: 10
-  moveForce: 500
-  rotationSpeed: 0.1
-  scrollSensitivity: 0.005
-  keyboardSensitivity: 0.1
 --- !u!114 &681330724167477858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,6 +66,32 @@ MonoBehaviour:
   moveDuration: 1
   rotationDuration: 1
   moveEase: 7
+--- !u!114 &4574781088744891589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2627818004332066065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8552ca3179dd4b7dacc988f2c141d0b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionDistance: 3
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 1971
+  maxVelocity: 15
+  moveForce: 5000
+  rotationSpeed: 10
+  maxDistance: 2
+  minDistance: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  scrollSensitivity: 0.0005
+  keyboardSensitivity: 1
 --- !u!1 &6174468192242751299
 GameObject:
   m_ObjectHideFlags: 0

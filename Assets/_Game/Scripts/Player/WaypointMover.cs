@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using DG.Tweening;
+using UnityEngine.InputSystem;
 
 public class WaypointMover : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class WaypointMover : MonoBehaviour
 
     private int _currentIndex = 0;
     private Sequence _moveTween;
+    private InputAction _moveNextAction;
+    private InputAction _movePrevAction;
 
     private void Start()
     {
@@ -21,28 +24,36 @@ public class WaypointMover : MonoBehaviour
         }
         
         transform.position = waypoints[0].position;
-        transform.LookAt(waypoints[1].position); // Начальная ориентация
+        transform.rotation = waypoints[0].rotation; // Начальная ориентация
     }
-
-    private void Update()
+    
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            MoveNext();
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            MovePrevious();
-        }
+        _moveNextAction = InputSystem.actions.FindAction("NextPosition");
+        _movePrevAction = InputSystem.actions.FindAction("PreviousPosition");
+        
+        _moveNextAction.performed += OnMoveNext;
+        _movePrevAction.performed += OnMovePrevious;
+        
+        _moveNextAction.Enable();
+        _movePrevAction.Enable();
+    }
+    private void OnDisable()
+    {
+        _moveNextAction.performed -= OnMoveNext;
+        _movePrevAction.performed -= OnMovePrevious;
+        
+        _moveNextAction.Disable();
+        _movePrevAction.Disable();
     }
 
-    private void MoveNext()
+    private void OnMoveNext(InputAction.CallbackContext ctx)
     {
         _currentIndex = (_currentIndex + 1) % waypoints.Length;
         MoveToWaypoint(waypoints[_currentIndex]);
     }
 
-    private void MovePrevious()
+    private void OnMovePrevious(InputAction.CallbackContext ctx)
     {
         _currentIndex--;
         if (_currentIndex < 0) _currentIndex = waypoints.Length - 1;

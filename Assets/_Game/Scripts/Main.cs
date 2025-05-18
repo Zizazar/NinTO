@@ -5,6 +5,7 @@ using _Game.Scripts.Player;
 using _Game.Scripts.UI.Screens;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 
 // <summary>
@@ -21,26 +22,63 @@ public class Main : MonoBehaviour
     
     [Header("References")]
     [SerializeField] private _Game.Scripts.UI.UIController uiController;
+    [SerializeField] private GameObject playerPrefab;
     
     // Ивенты
     [HideInInspector] public UnityEvent onNextNpc = new UnityEvent();
     [HideInInspector] public UnityEvent onNpcCome = new UnityEvent();
+    [HideInInspector] public UnityEvent onPause = new UnityEvent();
+    [HideInInspector] public UnityEvent onResume = new UnityEvent();
     
+    private InputAction _pauseAction;
     
-    void Start()
+    void Awake()
     {
         onNextNpc.AddListener(OnNextNpc);
         
+        _pauseAction = InputSystem.actions.FindAction("Pause");
+        _pauseAction.performed += TogglePause;
+        
+        onPause.AddListener(OnPause);
+        onResume.AddListener(OnResume);
         
         G.main = this;
 
         G.ui = uiController;
         
-        // G.player = SpawnPlayer();
+         G.player = SpawnPlayer();
 
         G.currentNpc = SpawnNextNPC();
     }
 
+    private void TogglePause(InputAction.CallbackContext ctx) 
+    {
+        if (G.paused)
+        {
+            onResume?.Invoke();
+            G.paused = false;
+        }
+        else
+        {
+            onPause?.Invoke();
+            G.paused = true;
+        }
+    }
+
+    private void OnPause()
+    {
+        G.ui.ShowScreen<PauseScreen>();
+        G.player.enabled = false;
+        G.currentNpc.enabled = false;
+    }
+
+    private void OnResume()
+    {
+        G.ui.HideScreen<PauseScreen>();
+        G.player.enabled = true;
+        G.currentNpc.enabled = true;
+    }
+    
     private void Update()
     {
         
@@ -53,8 +91,8 @@ public class Main : MonoBehaviour
 
     private PlayerController SpawnPlayer()
     {
-        GameObject playerPrefab = Resources.Load<GameObject>("Prefabs/Player");
-        return GameObject.Instantiate(playerPrefab).GetComponent<PlayerController>();
+        var player = FindObjectOfType<PlayerController>();
+        return player ? player : Instantiate(playerPrefab).GetComponent<PlayerController>();
     }
 
     private NpcController SpawnNextNPC()
