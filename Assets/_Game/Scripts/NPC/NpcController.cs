@@ -22,10 +22,12 @@ namespace _Game.Scripts.NPC
         {
             stateMachine = new NpcStateMachine();
             stateMachine.ChangeState<ComingNpcState>();
+            MoveTo();
         }
 
         public void MoveTo()
         {
+            transform.position = pathPositions.First();
             transform.DOPath(pathPositions, movementSpeed, PathType.CatmullRom, gizmoColor: Color.red)
                 .SetSpeedBased(true)
                 .SetEase(Ease.Linear)
@@ -34,6 +36,7 @@ namespace _Game.Scripts.NPC
         }
         public void MoveFrom()
         {
+            transform.position = pathPositions.Last();
             transform.DOPath(pathPositions.Reverse().ToArray(), movementSpeed, PathType.CatmullRom, gizmoColor: Color.red)
                 .SetSpeedBased(true)
                 .SetEase(Ease.Linear)

@@ -20,6 +20,10 @@ namespace _Game.Scripts.Player
         [SerializeField] private float maxVelocity = 15f;
         [SerializeField] private float moveForce = 500f;
         [SerializeField] private float rotationSpeed = 10f;
+        [SerializeField] private float maxDistance = 10f;
+        [SerializeField] private float minDistance = 0f;
+        [Space]
+        [SerializeField] private LayerMask groundLayer;
         [Space]
         [SerializeField] private float scrollSensitivity = 0.1f;
         [SerializeField] private float keyboardSensitivity = 0.1f;
@@ -42,7 +46,7 @@ namespace _Game.Scripts.Player
             _A_GrabDistanceKB = InputSystem.actions.FindAction("GrabDistanceKeyboard");
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -97,14 +101,23 @@ namespace _Game.Scripts.Player
                     
                 }
         }
+
+        private float GetMaxDistance()
+        {
+            return Physics.Raycast(cameraRay, 
+                 out RaycastHit hit, 
+                 maxDistance, 
+                 groundLayer.value) 
+                ? hit.distance : maxDistance;
+        }
         
         void GrabObject()
         {
             AudioManager.Instance.PlaySoundRandomPitch("grab", 0.9f, 1.2f);
             currentGrabDistance = Mathf.Clamp(
-                Vector3.Distance(grabbedObject.position, transform.position), 
-                0f, interactionDistance);
-
+                (cameraRay.origin - grabbedObject.transform.position).magnitude, 
+                minDistance, GetMaxDistance());
+            
 
             if (grabbedObject.TryGetComponent<FixedJoint>(out var joint))
                 Destroy(joint);
@@ -125,26 +138,24 @@ namespace _Game.Scripts.Player
             Vector3 forceDirection = targetPoint - grabbedObject.position;
 
             // Ограничение ускорения
-            Vector3 velocity = (targetPoint - grabbedObject.position) * 10f;
+            Vector3 velocity = targetPoint - grabbedObject.position;
             velocity = Vector3.ClampMagnitude(velocity, maxVelocity);
             grabbedObject.velocity = velocity;
 
+            
             // Перемещение назад вперёд
             float scroll = _A_GrabDistance.ReadValue<Vector2>().y;
             float input = _A_GrabDistanceKB.ReadValue<Vector2>().y;
             currentGrabDistance = Mathf.Clamp(
                 currentGrabDistance + (scroll * scrollSensitivity + input * keyboardSensitivity * Time.fixedDeltaTime),
-                0,
-                interactionDistance
+                minDistance,
+                GetMaxDistance()
             );
             
-            if (grabbedObject.velocity.magnitude > maxVelocity)
-            {
-                grabbedObject.velocity = grabbedObject.velocity.normalized * maxVelocity;
-            }
             grabbedObject.AddForce(forceDirection * (moveForce * Time.fixedDeltaTime));
 
-            Quaternion targetRotation = Quaternion.LookRotation(grabbedObject.transform.forward, grabbedObject.transform.up);
+            // Поворачиваем вверх
+            Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
             grabbedObject.angularVelocity = Vector3.zero;
             
             grabbedObject.MoveRotation(Quaternion.Slerp(
@@ -154,7 +165,33 @@ namespace _Game.Scripts.Player
             ));
         }
         
-        
+        #if UNITY_EDITOR
+            private void OnDrawGizmos()
+            {
+                if (grabbedObject != null)
+                {
+                    Gizmos.color = Color.red;
+                    float distance = Vector3.Distance(G.camera.transform.position, grabbedObject.transform.position);
+                    Gizmos.DrawLine(
+                        G.camera.transform.position,
+                        grabbedObject.transform.position);
+                    
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(
+                        G.camera.transform.position,
+                        cameraRay.GetPoint(currentGrabDistance));
+                    
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawLine(
+                        cameraRay.origin, 
+                        cameraRay.GetPoint(GetMaxDistance()));
+                    
+                    // Текст с дистанцией
+                    Vector3 midPoint = (G.camera.transform.position + grabbedObject.transform.position) / 2;
+                    Handles.Label(midPoint, "Distance: " + distance.ToString("F2"));
+                }
+            }
+        #endif
         
     }
 }
