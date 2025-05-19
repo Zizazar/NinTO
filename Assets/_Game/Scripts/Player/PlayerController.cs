@@ -37,7 +37,8 @@ namespace _Game.Scripts.Player
         private void OnEnable()
         {
             _openHandbookAction.performed += OpenHandbook;
-            
+         
+            // Востанавливаем работу зависимостей
             _startDialogueAction.Enable();
             _openHandbookAction.Enable();
             
@@ -50,6 +51,8 @@ namespace _Game.Scripts.Player
         {
             _openHandbookAction.performed -= OpenHandbook;
             
+            
+            // Выключаем зависимости если выключен игрок
             _startDialogueAction.Disable();
             _openHandbookAction.Disable();
             

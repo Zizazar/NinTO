@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine.InputSystem;
 
 public class WaypointMover : MonoBehaviour
@@ -84,4 +86,21 @@ public class WaypointMover : MonoBehaviour
 
         _moveTween = moveSequence;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        
+        for (int i = 0; i < waypoints.Length; i++)
+        {
+            Gizmos.color = i == _currentIndex ? Color.yellow : Color.magenta;
+            Gizmos.DrawWireSphere(waypoints[i].position, 0.05f);
+            Gizmos.color =  Color.cyan;
+            Gizmos.DrawRay(waypoints[i].position, waypoints[i].rotation * Vector3.forward / 4);
+            
+            Handles.Label(waypoints[i].position, i.ToString());
+        }
+        
+    }
+#endif
 }

@@ -26,22 +26,15 @@ namespace _Game.Scripts.NPC
             stateMachine = new NpcStateMachine();
             stateMachine.ChangeState<ComingNpcState>();
             MoveTo();
-            G.main.onPause.AddListener(OnPause);
-            G.main.onResume.AddListener(OnResume);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            G.main.onPause.RemoveListener(OnPause);
-            G.main.onResume.RemoveListener(OnResume);
-        }
-
-        private void OnPause()
-        {
+            // Останавливаем движение нпс если на паузе
             _moveTweener.Pause();
         }
 
-        private void OnResume()
+        private void OnEnable()
         {
             _moveTweener.Play();
         }

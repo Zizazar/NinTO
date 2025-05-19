@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
@@ -21,13 +22,13 @@ namespace _Game.Scripts.Player
         [SerializeField] private LayerMask groundLayer;
         [Space]
         [SerializeField] private float scrollSensitivity = 0.1f;
-        [SerializeField] private float keyboardSensitivity = 0.1f;
         
         
-        private Rigidbody grabbedObject;
-        private float currentGrabDistance;
+        private Rigidbody _grabbedObject;
+        private float _currentGrabDistance;
         private InputAction _interactAction;
         private InputAction _scrollAction;
+        private IGrabbable _currentGrabbable;
         
         private Ray cameraRay => G.camera.ScreenPointToRay(Input.mousePosition);
         
@@ -40,7 +41,6 @@ namespace _Game.Scripts.Player
             // Подключаем обработчики событий
             _interactAction.started += OnInteractStarted;   // Нажатие
             _interactAction.canceled += OnInteractCanceled; // Отпускание
-            _scrollAction.performed += OnScrollInput;
             
             _scrollAction.Enable();
             _interactAction.Enable();
@@ -65,23 +65,29 @@ namespace _Game.Scripts.Player
             ReleaseObject(); // Вызывается при отпускании
         }
 
-        private void OnScrollInput(InputAction.CallbackContext context)
+        private void HandleScrollInput()
         {
             // Перемещение назад вперёд
-            float input = context.ReadValue<Vector2>().y;
-            currentGrabDistance = Mathf.Clamp(
-                currentGrabDistance + (scrollSensitivity * input),
+            // input [-1; 1]
+            float input = _scrollAction.ReadValue<Vector2>().y;
+            
+            _currentGrabDistance = Mathf.Clamp(
+                _currentGrabDistance + (scrollSensitivity * input),
                 minDistance,
                 GetMaxDistance()
             );
         }
 
+        private void Update()
+        {
+            // В апдейте потому что ивент из InputSystem не может вызываться каждый кадр
+            HandleScrollInput(); 
+        }
+
         private void FixedUpdate()
         {
-            
-            if (grabbedObject != null) 
+            if (_grabbedObject) 
                 MoveGrabbedObject();
-            
         }
         
         // ----- Interact -------
@@ -94,11 +100,11 @@ namespace _Game.Scripts.Player
                 {
                     interactable.Interact();
                 }
-                else if (hit.collider.TryGetComponent(out BaseGrabbable grabbable))
+                else if (hit.collider.TryGetComponent(out _currentGrabbable))
                 {
-                    grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
+                    _grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
                     GrabObject();
-                    grabbable.OnGrab();
+                    _currentGrabbable.OnGrab();
 
                 }
             }
@@ -116,45 +122,47 @@ namespace _Game.Scripts.Player
         
         void GrabObject()
         {
-            currentGrabDistance = Mathf.Clamp(
-                (cameraRay.origin - grabbedObject.transform.position).magnitude, 
+            _currentGrabDistance = Mathf.Clamp(
+                (cameraRay.origin - _grabbedObject.transform.position).magnitude, 
                 minDistance, GetMaxDistance());
             
 
-            if (grabbedObject.TryGetComponent<FixedJoint>(out var joint))
+            if (_grabbedObject.TryGetComponent<FixedJoint>(out var joint))
                 Destroy(joint);
 
-            grabbedObject.useGravity = false;
+            _grabbedObject.useGravity = false;
             
         }
-        
-        public void ReleaseObject()
+
+        private void ReleaseObject()
         {
-            if (grabbedObject != null)
+            if (_grabbedObject)
             {
-                grabbedObject.useGravity = true;
-                grabbedObject = null;
+                _grabbedObject.useGravity = true;
+                _grabbedObject = null;
+                _currentGrabbable.OnRelease();
+                _currentGrabbable = null;
             }
         }
         
-        void MoveGrabbedObject()
+        private void MoveGrabbedObject()
         {
-            Vector3 targetPoint = cameraRay.GetPoint(currentGrabDistance);
-            Vector3 forceDirection = targetPoint - grabbedObject.position;
+            Vector3 targetPoint = cameraRay.GetPoint(_currentGrabDistance);
+            Vector3 forceDirection = targetPoint - _grabbedObject.position;
 
             // Ограничение ускорения
-            Vector3 velocity = targetPoint - grabbedObject.position;
+            Vector3 velocity = targetPoint - _grabbedObject.position;
             velocity = Vector3.ClampMagnitude(velocity, maxVelocity);
-            grabbedObject.velocity = velocity;
+            _grabbedObject.velocity = velocity;
             
-            grabbedObject.AddForce(forceDirection * (moveForce * Time.fixedDeltaTime));
+            _grabbedObject.AddForce(forceDirection * (moveForce * Time.fixedDeltaTime));
 
             // Поворачиваем вверх
             Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            grabbedObject.angularVelocity = Vector3.zero;
+            _grabbedObject.angularVelocity = Vector3.zero;
             
-            grabbedObject.MoveRotation(Quaternion.Slerp(
-                grabbedObject.rotation,
+            _grabbedObject.MoveRotation(Quaternion.Slerp(
+                _grabbedObject.rotation,
                 targetRotation,
                 rotationSpeed * Time.fixedDeltaTime
             ));
@@ -164,19 +172,19 @@ namespace _Game.Scripts.Player
         #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (grabbedObject != null)
+            if (_grabbedObject != null)
             {
                 // Расстояние до захваченого объекта
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(
                     cameraRay.origin,
-                    grabbedObject.transform.position);
+                    _grabbedObject.transform.position);
                     
                 // Целевое расстояние
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(
                     cameraRay.origin,
-                    cameraRay.GetPoint(currentGrabDistance));
+                    cameraRay.GetPoint(_currentGrabDistance));
                 
                 // Максимальное расстояние
                 Gizmos.color = Color.blue;
@@ -185,9 +193,9 @@ namespace _Game.Scripts.Player
                     cameraRay.GetPoint(GetMaxDistance()));
                     
                 // Текст с дистанцией
-                Vector3 midPoint = (cameraRay.origin + grabbedObject.transform.position) / 2;
+                Vector3 midPoint = (cameraRay.origin + _grabbedObject.transform.position) / 2;
                 Handles.Label(midPoint, 
-                    "Distance: " + Vector3.Distance(cameraRay.origin, grabbedObject.transform.position).ToString("F2"));
+                    "Distance: " + Vector3.Distance(cameraRay.origin, _grabbedObject.transform.position).ToString("F2"));
             }
         }
         #endif

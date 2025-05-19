@@ -15,26 +15,20 @@ using UnityEngine.InputSystem;
 // </summary>
 public class Main : MonoBehaviour
 {
-    [Header("NPC")]
-    [SerializeField] private GameObject npcPathRoot;
-    [SerializeField] private Transform npcSpawnPoint;
-    [SerializeField] private GameObject[] npcs;
-    
     [Header("References")]
     [SerializeField] private _Game.Scripts.UI.UIController uiController;
+    [SerializeField] private NpcSpawner npcSpawner;
     [SerializeField] private GameObject playerPrefab;
     
     // Ивенты
-    [HideInInspector] public UnityEvent onNextNpc = new UnityEvent();
-    [HideInInspector] public UnityEvent onNpcCome = new UnityEvent();
-    [HideInInspector] public UnityEvent onPause = new UnityEvent();
-    [HideInInspector] public UnityEvent onResume = new UnityEvent();
+    [HideInInspector] public UnityEvent onNpcCome;
+    [HideInInspector] public UnityEvent onPause;
+    [HideInInspector] public UnityEvent onResume;
     
     private InputAction _pauseAction;
     
     void Awake()
     {
-        onNextNpc.AddListener(OnNextNpc);
         
         _pauseAction = InputSystem.actions.FindAction("Pause");
         _pauseAction.performed += TogglePause;
@@ -46,9 +40,10 @@ public class Main : MonoBehaviour
 
         G.ui = uiController;
         
-         G.player = SpawnPlayer();
+        G.player = SpawnPlayer();
 
-        G.currentNpc = SpawnNextNPC();
+        G.currentNpc = npcSpawner.SpawnNext();
+
     }
 
     private void TogglePause(InputAction.CallbackContext ctx) 
@@ -65,6 +60,7 @@ public class Main : MonoBehaviour
         }
     }
 
+    // Выключаем контоллеры и все классы которые не должны обновлятся на паузе
     private void OnPause()
     {
         G.ui.ShowScreen<PauseScreen>();
@@ -78,45 +74,20 @@ public class Main : MonoBehaviour
         G.player.enabled = true;
         G.currentNpc.enabled = true;
     }
-    
-    private void Update()
-    {
-        
-        // TEST 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            uiController.ToggleScreen<HandbookScreen>();
-        }
-    }
 
     private PlayerController SpawnPlayer()
     {
         var player = FindObjectOfType<PlayerController>();
         return player ? player : Instantiate(playerPrefab).GetComponent<PlayerController>();
     }
-
-    private NpcController SpawnNextNPC()
+    /*
+    private void OnApplicationFocus(bool hasFocus)
     {
-        G.currentNpcIndex++;
-        NpcController newNpc = Instantiate(npcs[G.currentNpcIndex]).GetComponent<NpcController>();
-
-        newNpc.pathPositions = new Vector3[npcPathRoot.transform.childCount];
-        for (int i = 0; i < npcPathRoot.transform.childCount; i++)
+        // Авто пауза
+        if (!hasFocus)
         {
-            newNpc.pathPositions[i] = npcPathRoot.transform.GetChild(i).position;
+            onPause.Invoke();
         }
-        newNpc.Init();
-        return newNpc;
     }
-    
-    // Колбэки ивентов
-    private void OnNextNpc()
-    {
-        if (G.currentNpc == null) // Удаляем NPC если уже был заспавнен
-            Destroy(G.currentNpc.gameObject);
-        
-        G.currentNpc = SpawnNextNPC();
-    }
-    
-    
+    */
 }
