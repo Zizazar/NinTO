@@ -22,12 +22,15 @@ namespace _Game.Scripts.Player
         [SerializeField] private LayerMask groundLayer;
         [Space]
         [SerializeField] private float scrollSensitivity = 0.1f;
+        [SerializeField] private float keyboardSensitivity = 0.1f;
         
         
         private Rigidbody _grabbedObject;
         private float _currentGrabDistance;
         private InputAction _interactAction;
         private InputAction _scrollAction;
+        private InputAction _keyboardScrollAction;
+        
         private IGrabbable _currentGrabbable;
         
         private Ray cameraRay => G.camera.ScreenPointToRay(Input.mousePosition);
@@ -37,6 +40,7 @@ namespace _Game.Scripts.Player
         {
             _interactAction = InputSystem.actions.FindAction("Interact");
             _scrollAction = InputSystem.actions.FindAction("GrabDistance");
+            _keyboardScrollAction = InputSystem.actions.FindAction("GrabDistanceKb");
             
             // Подключаем обработчики событий
             _interactAction.started += OnInteractStarted;   // Нажатие
@@ -67,25 +71,27 @@ namespace _Game.Scripts.Player
 
         private void HandleScrollInput()
         {
+            if (!_grabbedObject) return;
+            
             // Перемещение назад вперёд
             // input [-1; 1]
             float input = _scrollAction.ReadValue<Vector2>().y;
+            float kbInput = _keyboardScrollAction.ReadValue<Vector2>().y;
+            
+            if (input == 0 && kbInput == 0) return;
             
             _currentGrabDistance = Mathf.Clamp(
-                _currentGrabDistance + (scrollSensitivity * input),
+                _currentGrabDistance + (scrollSensitivity * input * Time.deltaTime) + (keyboardSensitivity * kbInput * Time.deltaTime),
                 minDistance,
                 GetMaxDistance()
+                
             );
-        }
-
-        private void Update()
-        {
-            // В апдейте потому что ивент из InputSystem не может вызываться каждый кадр
-            HandleScrollInput(); 
         }
 
         private void FixedUpdate()
         {
+            // В апдейте потому что ивент из InputSystem не может вызываться каждый кадр
+            HandleScrollInput(); 
             if (_grabbedObject) 
                 MoveGrabbedObject();
         }
@@ -103,6 +109,7 @@ namespace _Game.Scripts.Player
                 else if (hit.collider.TryGetComponent(out _currentGrabbable))
                 {
                     _grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
+                    
                     GrabObject();
                     _currentGrabbable.OnGrab();
 
@@ -133,6 +140,7 @@ namespace _Game.Scripts.Player
             _grabbedObject.useGravity = false;
             
         }
+        
 
         private void ReleaseObject()
         {

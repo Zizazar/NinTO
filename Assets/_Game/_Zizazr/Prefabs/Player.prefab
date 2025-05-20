@@ -90,8 +90,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 1024
-  scrollSensitivity: 0.0005
-  keyboardSensitivity: 1
+  scrollSensitivity: 0.1
 --- !u!1 &6174468192242751299
 GameObject:
   m_ObjectHideFlags: 0
