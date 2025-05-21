@@ -10,7 +10,7 @@ public class StartNode : Node {
 		GetNextNode()?.Execute();
 	}
 	
-	public new BaseNode GetNextNode() {
+	public BaseNode GetNextNode() {
 		NodePort port = GetOutputPort("output");
 		if (!port.IsConnected) return null;
 		return port.Connection.node as BaseNode;

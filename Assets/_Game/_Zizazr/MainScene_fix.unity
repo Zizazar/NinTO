@@ -19436,6 +19436,22 @@ PrefabInstance:
       propertyPath: npcPathRoot
       value: 
       objectReference: {fileID: 230189052}
+    - target: {fileID: 7586106704220886832, guid: 94d6a38985974804ead473aa42f872ea, type: 3}
+      propertyPath: npcs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7586106704220886832, guid: 94d6a38985974804ead473aa42f872ea, type: 3}
+      propertyPath: npcs.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: d348dc568fd5b9445a0c3da49b95ccf7, type: 2}
+    - target: {fileID: 7586106704220886832, guid: 94d6a38985974804ead473aa42f872ea, type: 3}
+      propertyPath: npcs.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: d348dc568fd5b9445a0c3da49b95ccf7, type: 2}
+    - target: {fileID: 7586106704220886832, guid: 94d6a38985974804ead473aa42f872ea, type: 3}
+      propertyPath: npcs.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: d348dc568fd5b9445a0c3da49b95ccf7, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

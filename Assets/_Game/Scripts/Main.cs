@@ -42,6 +42,8 @@ public class Main : MonoBehaviour
         
         G.player = SpawnPlayer();
 
+        npcSpawner.Init();
+
         G.currentNpc = npcSpawner.SpawnNext();
 
     }
@@ -78,16 +80,17 @@ public class Main : MonoBehaviour
     private PlayerController SpawnPlayer()
     {
         var player = FindObjectOfType<PlayerController>();
-        return player ? player : Instantiate(playerPrefab).GetComponent<PlayerController>();
+        return !player ? Instantiate(playerPrefab).GetComponent<PlayerController>() : player;
     }
-    /*
+    #if !UNITY_EDITOR
     private void OnApplicationFocus(bool hasFocus)
     {
-        // Авто пауза
+        // Авто пауза (только в билде)
         if (!hasFocus)
         {
             onPause.Invoke();
         }
     }
-    */
+    #endif
+    
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using _Game.Scripts.NPC.States;
+using _Game.Scripts.Utils;
 using DG.Tweening;
 using DG.Tweening.Plugins.Core.PathCore;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,17 +17,31 @@ namespace _Game.Scripts.NPC
         public float movementSpeed = 10f;
         public Vector3[] pathPositions;
         public NpcStateMachine stateMachine {get; private set;}
+
+        [Expandable] private NpcData _data;
         
-        public UnityEvent onNpcCome = new UnityEvent();
-        public UnityEvent onNpcLeave = new UnityEvent();
+        public NpcData Data => _data;
+        
+        [HideInInspector] public UnityEvent onNpcCome = new UnityEvent();
+        [HideInInspector] public UnityEvent onNpcLeave = new UnityEvent();
         
         private Tweener _moveTweener;
 
-        public void Init()
+        public void Init(NpcData data, Vector3[] path)
         {
             stateMachine = new NpcStateMachine();
+            _data = data;
+            pathPositions = path;
+            SetRandomParams();
+            
             stateMachine.ChangeState<ComingNpcState>();
             MoveTo();
+        }
+        
+        private void SetRandomParams()
+        {
+            _data.role = WeightedRandomizer.GetWeightedValue(NpcRandomDataWeights.Roles);
+            _data.order = WeightedRandomizer.GetWeightedValue(NpcRandomDataWeights.Coffee);
         }
 
         private void OnDisable()
@@ -37,6 +53,16 @@ namespace _Game.Scripts.NPC
         private void OnEnable()
         {
             _moveTweener.Play();
+        }
+
+        private void OnDestroy()
+        {
+            _moveTweener?.Kill();
+        }
+
+        public void SetMood(NpcMood newMood)
+        {
+            _data.mood = newMood;
         }
 
         public void MoveTo()

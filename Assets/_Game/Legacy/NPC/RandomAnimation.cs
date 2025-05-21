@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 using UnityEngine;
 
 namespace _Game.Legacy.NPC
@@ -40,6 +40,7 @@ namespace _Game.Legacy.NPC
         void CollectStates()
         {
 #if UNITY_EDITOR
+            /*
             if (!animatorController) return;
             var controller = animatorController as AnimatorController;
             AnimatorStateMachine machine = null;
@@ -65,6 +66,7 @@ namespace _Game.Legacy.NPC
             }
 
             EditorUtility.SetDirty(this);
+            */
 #endif
         }
 
