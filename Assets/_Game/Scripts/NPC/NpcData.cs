@@ -1,3 +1,4 @@
+using _Game.Scripts.Utils;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -9,7 +10,9 @@ namespace _Game.Scripts.NPC
         public string npcName;
         [Required]
         public GameObject prefab;
+        [ShowAssetPreview]
         public Sprite npcPhoto;
+        public WeightedValue<DialogueGraph>[] dialogueGraphs;
         
         public NpcMood mood = NpcMood.Neutral;
         public NpcRole role;
@@ -26,6 +29,8 @@ namespace _Game.Scripts.NPC
     public enum NpcRole
     {
         Normal,
+        Witness,
+        Involved,
         Killer
     }
 

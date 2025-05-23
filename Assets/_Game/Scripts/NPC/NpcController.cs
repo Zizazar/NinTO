@@ -7,18 +7,20 @@ using _Game.Scripts.Utils;
 using DG.Tweening;
 using DG.Tweening.Plugins.Core.PathCore;
 using NaughtyAttributes;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace _Game.Scripts.NPC
 {
+    [RequireComponent(typeof(Animator))]
     public class NpcController : MonoBehaviour
     {
         public float movementSpeed = 10f;
         public Vector3[] pathPositions;
         public NpcStateMachine stateMachine {get; private set;}
 
-        [Expandable] private NpcData _data;
+        [Expandable, SerializeField] private NpcData _data;
         
         public NpcData Data => _data;
         
@@ -26,22 +28,36 @@ namespace _Game.Scripts.NPC
         [HideInInspector] public UnityEvent onNpcLeave = new UnityEvent();
         
         private Tweener _moveTweener;
+        private Animator _animator;
+        private DialogueGraph _currentDialogueGraph;
+
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+        }
 
         public void Init(NpcData data, Vector3[] path)
         {
             stateMachine = new NpcStateMachine();
             _data = data;
             pathPositions = path;
+            
             SetRandomParams();
             
-            stateMachine.ChangeState<ComingNpcState>();
             MoveTo();
         }
         
         private void SetRandomParams()
         {
+            _currentDialogueGraph = WeightedRandomizer.GetWeightedValue(_data.dialogueGraphs);
             _data.role = WeightedRandomizer.GetWeightedValue(NpcRandomDataWeights.Roles);
             _data.order = WeightedRandomizer.GetWeightedValue(NpcRandomDataWeights.Coffee);
+            _data.mood = WeightedRandomizer.GetWeightedValue(NpcRandomDataWeights.Moods);
+        }
+
+        public void OnDialogueStart()
+        {
+            _currentDialogueGraph.Start();
         }
 
         private void OnDisable()
@@ -67,6 +83,8 @@ namespace _Game.Scripts.NPC
 
         public void MoveTo()
         {
+            stateMachine.ChangeState<ComingNpcState>();
+            
             transform.position = pathPositions.First();
             _moveTweener = transform.DOPath(pathPositions, movementSpeed, PathType.CatmullRom, gizmoColor: Color.red)
                 .SetSpeedBased(true)
@@ -76,6 +94,8 @@ namespace _Game.Scripts.NPC
         }
         public void MoveFrom()
         {
+            stateMachine.ChangeState<LeavingCoffeeNpcState>();
+            
             transform.position = pathPositions.Last();
             _moveTweener = transform.DOPath(pathPositions.Reverse().ToArray(), movementSpeed, PathType.CatmullRom, gizmoColor: Color.red)
                 .SetSpeedBased(true)
@@ -83,5 +103,17 @@ namespace _Game.Scripts.NPC
                 .SetLookAt(0.1f)
                 .OnComplete(onNpcLeave.Invoke);
         }
+
+        #if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            var labelPos = transform.position + new Vector3(0, 1.5f, 0);
+            Handles.Label(labelPos, 
+                "Name: " + _data.npcName + "\n" + 
+                "State: " + stateMachine?.CurrentState.ToString().Split(".").Last()
+                );
+
+        }
+        #endif
     }
 }

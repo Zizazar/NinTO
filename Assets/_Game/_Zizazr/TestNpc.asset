@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Test
   prefab: {fileID: 2752153159400938127, guid: 3ac81ed3842079b47be84776ede6bc74, type: 3}
-  npcPhoto: {fileID: 0}
+  npcPhoto: {fileID: 21300000, guid: a196d7014c35bdb42acc1b0eb34ff66a, type: 3}
+  dialogueGraphs:
+  - value: {fileID: 11400000, guid: e036d7b46224b0644a1f09935facf4ae, type: 2}
+    weight: 1
   mood: 0
   role: 0
   order: 0

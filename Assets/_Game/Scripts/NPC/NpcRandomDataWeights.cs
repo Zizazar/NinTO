@@ -10,6 +10,13 @@ namespace _Game.Scripts.NPC
             new() {value = NpcRole.Killer, weight = 0.4f}
         };
         
+        public static readonly WeightedValue<NpcMood>[] Moods =
+        {
+            new() {value = NpcMood.Neutral, weight = 0.6f},
+            new() {value = NpcMood.Happy, weight = 0.4f},
+            new() {value = NpcMood.Angry, weight = 0.2f}
+        };
+        
         public static readonly WeightedValue<CoffeeType>[] Coffee =
         {
             new() {value = CoffeeType.Americano, weight = 0.3f},
