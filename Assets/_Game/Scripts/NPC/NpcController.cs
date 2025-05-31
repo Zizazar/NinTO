@@ -10,13 +10,16 @@ using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace _Game.Scripts.NPC
 {
     [RequireComponent(typeof(Animator))]
     public class NpcController : MonoBehaviour
     {
+        [SerializeField] private GameObject talkHint;
         public float movementSpeed = 10f;
+        
         public Vector3[] pathPositions;
         public NpcStateMachine stateMachine {get; private set;}
 
@@ -27,9 +30,10 @@ namespace _Game.Scripts.NPC
         [HideInInspector] public UnityEvent onNpcCome = new UnityEvent();
         [HideInInspector] public UnityEvent onNpcLeave = new UnityEvent();
         
+        private DialogueGraph _currentDialogueGraph;
         private Tweener _moveTweener;
         private Animator _animator;
-        private DialogueGraph _currentDialogueGraph;
+        
 
         private void Awake()
         {

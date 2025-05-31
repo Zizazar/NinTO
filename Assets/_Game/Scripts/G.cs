@@ -14,18 +14,17 @@ public static class G
     public static Main main { get; set; }
     public static _Game.Scripts.UI.UIController ui { get; set; }
     public static PlayerController player  { get; set; }
-    public static NpcController currentNpc  { get; set; }
+    public static NpcSpawner npcSpawner { get; set; }
     
     public static readonly Camera camera = Camera.main;
 
     public static bool paused;
     
-    public static int openedNpcsCount = 4;
+    public static int openedNpcsCount = 0;
     
     public static int currentNpcIndex = -1;
-    
-       
-    
+
+
     public static string GetCharacterName(Characters character)
     {
         switch (character)

@@ -19,8 +19,10 @@ namespace _Game.Scripts.UI
         
         private List<BaseOverlay> _overlays;
 
-        private void Start()
+        private void Awake()
         {
+            G.ui = this;
+            
             _screens = new List<BaseScreen>( // Конвертация в List чтобы работал Find
                 m_ScreensRoot.GetComponentsInChildren<BaseScreen>(true)
                 );

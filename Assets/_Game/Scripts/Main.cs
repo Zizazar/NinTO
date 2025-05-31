@@ -3,6 +3,8 @@ using _Game.Legacy.DialogueSystem;
 using _Game.Scripts.NPC;
 using _Game.Scripts.Player;
 using _Game.Scripts.UI.Screens;
+using GoT._Game.Scripts.Utils;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -16,8 +18,6 @@ using UnityEngine.InputSystem;
 public class Main : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private _Game.Scripts.UI.UIController uiController;
-    [SerializeField] private NpcSpawner npcSpawner;
     [SerializeField] private GameObject playerPrefab;
     
     // Ивенты
@@ -27,7 +27,7 @@ public class Main : MonoBehaviour
     
     private InputAction _pauseAction;
     
-    void Awake()
+    void Start()
     {
         
         _pauseAction = InputSystem.actions.FindAction("Pause");
@@ -35,16 +35,18 @@ public class Main : MonoBehaviour
         
         onPause.AddListener(OnPause);
         onResume.AddListener(OnResume);
+
+        G.currentNpcIndex = -1;
+        G.openedNpcsCount = 0;
+        G.paused = false;
         
         G.main = this;
-
-        G.ui = uiController;
         
         G.player = SpawnPlayer();
 
-        npcSpawner.Init();
+        G.npcSpawner.Init();
 
-        G.currentNpc = npcSpawner.SpawnNext();
+        G.npcSpawner.SpawnNext();
 
     }
 
@@ -67,14 +69,14 @@ public class Main : MonoBehaviour
     {
         G.ui.ShowScreen<PauseScreen>();
         G.player.enabled = false;
-        G.currentNpc.enabled = false;
+        G.npcSpawner.current.enabled = false;
     }
 
     private void OnResume()
     {
         G.ui.HideScreen<PauseScreen>();
         G.player.enabled = true;
-        G.currentNpc.enabled = true;
+        G.npcSpawner.current.enabled = true;
     }
 
     private PlayerController SpawnPlayer()
@@ -82,6 +84,7 @@ public class Main : MonoBehaviour
         var player = FindObjectOfType<PlayerController>();
         return !player ? Instantiate(playerPrefab).GetComponent<PlayerController>() : player;
     }
+    
     #if !UNITY_EDITOR
     private void OnApplicationFocus(bool hasFocus)
     {

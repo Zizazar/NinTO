@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GoT._Game.Scripts.Utils;
 using NaughtyAttributes;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,14 +12,19 @@ namespace _Game.Scripts.NPC
 {
     public class NpcSpawner : MonoBehaviour
     {
-        [SerializeField] private List<NpcData> npcs;
+        [SerializeField, CharacterSelector] private List<NpcData> npcs;
         [SerializeField] private GameObject npcPathRoot;
 
         [HideInInspector] public UnityEvent onNextNpc;
         public NpcController current;
 
         private Vector3[] _pathPositions;
-        
+
+        public void Awake()
+        {
+            G.npcSpawner = this;
+        }
+
         public void Init()
         {
             npcs = npcs.OrderBy( x => Random.value ).ToList();
