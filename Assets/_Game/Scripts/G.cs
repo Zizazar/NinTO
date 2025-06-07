@@ -12,6 +12,7 @@ using UnityEngine;
 public static class G
 {
     public static Main main { get; set; }
+    public static GameInput input { get; set; }
     public static _Game.Scripts.UI.UIController ui { get; set; }
     public static PlayerController player  { get; set; }
     public static NpcSpawner npcSpawner { get; set; }

@@ -14,34 +14,32 @@ namespace _Game.Scripts.Player
     public class PlayerController : MonoBehaviour
     {
 
-        private InputAction _startDialogueAction;
-        private InputAction _openHandbookAction;
-        
+        private bool _initialized;
+
         private DialogueGraph _dialogueGraph;
-        
+
         private WaypointMover _waypointMover;
         private ParallaxCamera _parallaxCamera;
         private PlayerInteraction _playerInteraction;
-        
-        
-        private void Awake()
+
+
+        public void Init()
         {
-            _startDialogueAction = InputSystem.actions.FindAction("Talk");
-            _openHandbookAction = InputSystem.actions.FindAction("OpenHandbook");
+            G.input.Player.Enable();
             
             _waypointMover = GetComponent<WaypointMover>();
             _parallaxCamera = G.camera.GetComponent<ParallaxCamera>();
             _playerInteraction = GetComponent<PlayerInteraction>();
+            
+            _initialized = true;
         }
 
         private void OnEnable()
         {
-            _openHandbookAction.performed += OpenHandbook;
-         
-            // Востанавливаем работу зависимостей
-            _startDialogueAction.Enable();
-            _openHandbookAction.Enable();
+            if (!_initialized) return;
             
+            G.input.Player.Enable();
+
             _waypointMover.enabled = true;
             _parallaxCamera.enabled = true;
             _playerInteraction.enabled = true;
@@ -49,13 +47,10 @@ namespace _Game.Scripts.Player
 
         private void OnDisable()
         {
-            _openHandbookAction.performed -= OpenHandbook;
-            
-            
+            if (!_initialized) return;
             // Выключаем зависимости если выключен игрок
-            _startDialogueAction.Disable();
-            _openHandbookAction.Disable();
-            
+            G.input.Player.Disable();
+
             _waypointMover.enabled = false;
             _parallaxCamera.enabled = false;
             _playerInteraction.enabled = false;
@@ -66,16 +61,18 @@ namespace _Game.Scripts.Player
             G.ui.ToggleScreen<HandbookScreen>();
         }
 
-        private void Update()
+        private void OnNextDialogue(InputAction.CallbackContext ctx)
+        {
+            Debug.Log("Next dialogue");
+            _dialogueGraph?.NextPhrase();
+        }
+
+    private void Update()
         {
             if (Input.GetKeyDown(KeyCode.V))
             {
                 _dialogueGraph = Resources.Load<DialogueGraph>("Dialogues/TestDialogue");
                 _dialogueGraph.Start();
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _dialogueGraph?.NextPhrase();
             }
         }
     }

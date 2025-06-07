@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using _Game.Scripts.GameStages;
 using _Game.Scripts.NPC.States;
 using _Game.Scripts.Utils;
 using DG.Tweening;
@@ -31,7 +32,6 @@ namespace _Game.Scripts.NPC
         [HideInInspector] public UnityEvent onNpcLeave = new UnityEvent();
         
         private DialogueGraph _currentDialogueGraph;
-        private Tweener _moveTweener;
         private Animator _animator;
         
 
@@ -42,13 +42,13 @@ namespace _Game.Scripts.NPC
 
         public void Init(NpcData data, Vector3[] path)
         {
-            stateMachine = new NpcStateMachine();
+            stateMachine = new NpcStateMachine(this);
             _data = data;
             pathPositions = path;
             
             SetRandomParams();
             
-            MoveTo();
+            stateMachine.ChangeState<ComingNpcNpcState>();
         }
         
         private void SetRandomParams()
@@ -59,53 +59,29 @@ namespace _Game.Scripts.NPC
             _data.mood = WeightedRandomizer.GetWeightedValue(NpcRandomDataWeights.Moods);
         }
 
+        private void Update()
+        {
+            stateMachine.Update();
+        }
+
         public void OnDialogueStart()
         {
             _currentDialogueGraph.Start();
         }
 
-        private void OnDisable()
-        {
-            // Останавливаем движение нпс если на паузе
-            _moveTweener.Pause();
-        }
+        private void OnDisable() => stateMachine?.currentNpcState?.OnNpcDisable();
 
-        private void OnEnable()
-        {
-            _moveTweener.Play();
-        }
+        private void OnEnable() => stateMachine?.currentNpcState?.OnNpcEnable();
 
-        private void OnDestroy()
-        {
-            _moveTweener?.Kill();
-        }
+        private void OnDestroy() => stateMachine?.currentNpcState?.OnDestroy();
 
+        
+        public void ShowHint()  => talkHint.SetActive(true);
+        public void HideHint()  => talkHint.SetActive(false);
+        
         public void SetMood(NpcMood newMood)
         {
             _data.mood = newMood;
-        }
-
-        public void MoveTo()
-        {
-            stateMachine.ChangeState<ComingNpcState>();
-            
-            transform.position = pathPositions.First();
-            _moveTweener = transform.DOPath(pathPositions, movementSpeed, PathType.CatmullRom, gizmoColor: Color.red)
-                .SetSpeedBased(true)
-                .SetEase(Ease.Linear)
-                .SetLookAt(0.1f) // Поворот в сторону движения
-                .OnComplete(onNpcCome.Invoke); 
-        }
-        public void MoveFrom()
-        {
-            stateMachine.ChangeState<LeavingCoffeeNpcState>();
-            
-            transform.position = pathPositions.Last();
-            _moveTweener = transform.DOPath(pathPositions.Reverse().ToArray(), movementSpeed, PathType.CatmullRom, gizmoColor: Color.red)
-                .SetSpeedBased(true)
-                .SetEase(Ease.Linear)
-                .SetLookAt(0.1f)
-                .OnComplete(onNpcLeave.Invoke);
         }
 
         #if UNITY_EDITOR
@@ -114,7 +90,7 @@ namespace _Game.Scripts.NPC
             var labelPos = transform.position + new Vector3(0, 1.5f, 0);
             Handles.Label(labelPos, 
                 "Name: " + _data.npcName + "\n" + 
-                "State: " + stateMachine?.CurrentState.ToString().Split(".").Last()
+                "State: " + stateMachine?.currentNpcState.ToString().Split(".").Last()
                 );
 
         }

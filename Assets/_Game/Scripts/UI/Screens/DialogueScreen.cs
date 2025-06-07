@@ -25,7 +25,7 @@ namespace _Game.Scripts.UI.Screens
             characterNameComp.text = characterName;
             StartCoroutine(TypeText(text));
         }
-        // ReSharper disable Unity.PerformanceAnalysis
+        
         public void StartDialogueIfNotStarted()
         {
             if (!dialogueInProcess)

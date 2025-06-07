@@ -25,13 +25,14 @@ public class Main : MonoBehaviour
     [HideInInspector] public UnityEvent onPause;
     [HideInInspector] public UnityEvent onResume;
     
-    private InputAction _pauseAction;
     
     void Start()
     {
+
+        G.input = new GameInput();
         
-        _pauseAction = InputSystem.actions.FindAction("Pause");
-        _pauseAction.performed += TogglePause;
+        G.input.Main.Pause.performed += TogglePause;
+        G.input.Main.Enable();
         
         onPause.AddListener(OnPause);
         onResume.AddListener(OnResume);
@@ -43,7 +44,8 @@ public class Main : MonoBehaviour
         G.main = this;
         
         G.player = SpawnPlayer();
-
+        G.player.Init();
+        
         G.npcSpawner.Init();
 
         G.npcSpawner.SpawnNext();

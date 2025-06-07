@@ -2,21 +2,21 @@
 
 namespace _Game.Scripts.NPC.States
 {
-    public class InDialogueNpcState : IState
+    public class InDialogueNpcNpcState : INpcState
     {
-        public void Enter()
+        public void Enter(NpcStateMachine stateMachine)
         {
-            
+            stateMachine.controller.OnDialogueStart();
         }
 
-        public void Exit()
-        {
-            
-        }
+        public void Exit() { }
 
-        public void Update()
-        {
-            
-        }
+        public void Update() { }
+
+        public void OnDestroy() { }
+
+        public void OnNpcEnable() { }
+
+        public void OnNpcDisable() { }
     }
 }

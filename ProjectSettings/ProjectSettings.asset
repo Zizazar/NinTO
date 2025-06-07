@@ -164,7 +164,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.NinTO.Seeds-of-truth
+    Standalone: com.NinTO.Grains-of-Truth
   buildNumber:
     Standalone: 0
     VisionOS: 0
