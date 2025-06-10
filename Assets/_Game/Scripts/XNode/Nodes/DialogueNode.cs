@@ -2,6 +2,7 @@ using _Game.Scripts.UI.Screens;
 using NaughtyAttributes;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using XNode;
 
 public class DialogueNode : BaseNode
@@ -13,22 +14,31 @@ public class DialogueNode : BaseNode
     public Characters character;
     [ResizableTextArea]
     public string text;
+    
     public override void Execute()
     {
-        if (graph is not DialogueGraph dialogueGraph)
-        {
-            Debug.LogError( "Dialogue node is not in a DialogueGraph" );
-            return;
-        }
 
         dialogueGraph.DialogueScreen.StartDialogueIfNotStarted();
         
-        dialogueGraph.currentDialogueNode = this;
         dialogueGraph.DialogueScreen.PlayPhrase(text, G.GetCharacterName(character));
+        G.input.Dialogue.Next.performed += MoveNext;
     }
-    
-    public override object GetValue(NodePort port) {
-        return output;
+
+    private void MoveNext(InputAction.CallbackContext ctx)
+    {
+        MoveNext();
+    }
+
+    public override void MoveNext()
+    {
+        G.input.Dialogue.Next.performed -= MoveNext;
+
+        NodePort port = GetOutputPort("output");
+        if (port.Connection != null) {
+            (port.Connection.node as BaseNode)?.Execute();
+        } else {
+            dialogueGraph.DialogueScreen.EndDialogue();
+        }
     }
 }
 

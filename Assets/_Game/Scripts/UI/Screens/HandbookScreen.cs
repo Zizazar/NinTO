@@ -13,8 +13,8 @@ namespace _Game.Scripts.UI.Screens
 {
     public class HandbookScreen : BaseScreen
     {
-        public UnityEvent<int> onChoose;
-        public int selectedNpc = -1;
+        public UnityEvent onChoose;
+        public string selectedNpcId;
         
         [Header("References")]
         [SerializeField] private Button chooseButton;
@@ -27,7 +27,7 @@ namespace _Game.Scripts.UI.Screens
         private void Awake()
         {
             chooseButton.onClick.AddListener(
-                () => onChoose.Invoke(selectedNpc)
+                () => onChoose.Invoke()
                 );
             foreach (CharacterButton characterButton in npcCards)
             {

@@ -7,8 +7,8 @@ using XNode;
 public class DialogueGraph : NodeGraph
 {
     public UnityEvent onDialogueEnd;
-    
-    public DialogueNode currentDialogueNode;
+    public UnityEvent onNextPhrase;
+    public UnityEvent onHandbookChoose;
     
     public DialogueScreen DialogueScreen {get; private set;}
     
@@ -19,20 +19,6 @@ public class DialogueGraph : NodeGraph
         DialogueScreen = G.ui.GetScreen<DialogueScreen>();
         
         StartNode startNode = (StartNode)nodes.Find(node => node is StartNode startNode);
-        startNode.Start();
-    }
-
-    // Ивент вызывается когда нужно перейти к следующей фразе
-    public void NextPhrase()
-    {
-        if (currentDialogueNode)
-            if (currentDialogueNode.NextNode())
-            {
-                currentDialogueNode.NextNode().Execute();
-            }
-            else
-            {
-                DialogueScreen.EndDialogue();
-            }
+        startNode.Execute();
     }
 }

@@ -1,4 +1,5 @@
 using _Game.Scripts.Utils;
+using GoT._Game.Scripts.Utils;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace _Game.Scripts.NPC
     [CreateAssetMenu(menuName = "NPC/Data")]
     public class NpcData : ScriptableObject
     {
+        [UUID] public string ID;
         public string npcName;
         [Required]
         public GameObject prefab;

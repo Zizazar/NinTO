@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7818232890993911171
+--- !u!114 &-9131722960773892292
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,18 +13,15 @@ MonoBehaviour:
   m_Name: Handbook Choose
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 280, y: -88}
+  position: {x: 168, y: -104}
   ports:
     keys:
     - input
-    - output
-    - output 0
-    - output 1
-    - output 2
-    - output 3
+    - "(c4c...) \u0421\u0442\u0430\u0440\u0438\u043A \u0431\u0438\u043B\u043B"
+    - (79c...) testGG
     values:
     - _fieldName: input
-      _node: {fileID: -7818232890993911171}
+      _node: {fileID: -9131722960773892292}
       _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
@@ -35,18 +32,8 @@ MonoBehaviour:
       _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
-    - _fieldName: output
-      _node: {fileID: -7818232890993911171}
-      _typeQualifiedName: System.Collections.Generic.List`1[[BaseNode, Assembly-CSharp,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
-        Culture=neutral, PublicKeyToken=b77a5c561934e089
-      connections: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 0
-    - _fieldName: output 0
-      _node: {fileID: -7818232890993911171}
+    - _fieldName: "(c4c...) \u0421\u0442\u0430\u0440\u0438\u043A \u0431\u0438\u043B\u043B"
+      _node: {fileID: -9131722960773892292}
       _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
@@ -54,11 +41,11 @@ MonoBehaviour:
         node: {fileID: 819885994994993230}
         reroutePoints: []
       _direction: 1
-      _connectionType: 0
+      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 1
-    - _fieldName: output 1
-      _node: {fileID: -7818232890993911171}
+    - _fieldName: (79c...) testGG
+      _node: {fileID: -9131722960773892292}
       _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
@@ -66,39 +53,13 @@ MonoBehaviour:
         node: {fileID: -474060706983929281}
         reroutePoints: []
       _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 1
-    - _fieldName: output 2
-      _node: {fileID: -7818232890993911171}
-      _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: input
-        node: {fileID: 819885994994993230}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
-      _typeConstraint: 0
-      _dynamic: 1
-    - _fieldName: output 3
-      _node: {fileID: -7818232890993911171}
-      _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      connections:
-      - fieldName: input
-        node: {fileID: -474060706983929281}
-        reroutePoints: []
-      _direction: 1
-      _connectionType: 0
+      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 1
   input: {fileID: 0}
-  output:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  availableNpcs:
+  - {fileID: 11400000, guid: 6655069661b318f4e9d65281ee1182b0, type: 2}
+  - {fileID: 11400000, guid: 626fe2c754fc7ef4a87fcc69c91534a0, type: 2}
 --- !u!114 &-3493469356272221772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +73,7 @@ MonoBehaviour:
   m_Name: Dialogue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -232, y: -88}
+  position: {x: -328, y: -88}
   ports:
     keys:
     - input
@@ -159,7 +120,7 @@ MonoBehaviour:
   m_Name: Dialogue
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: 40, y: -88}
+  position: {x: -56, y: -88}
   ports:
     keys:
     - input
@@ -183,7 +144,7 @@ MonoBehaviour:
         PublicKeyToken=null
       connections:
       - fieldName: input
-        node: {fileID: -7818232890993911171}
+        node: {fileID: -9131722960773892292}
         reroutePoints: []
       _direction: 1
       _connectionType: 1
@@ -217,11 +178,8 @@ MonoBehaviour:
       _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: output 1
-        node: {fileID: -7818232890993911171}
-        reroutePoints: []
-      - fieldName: output 3
-        node: {fileID: -7818232890993911171}
+      - fieldName: (79c...) testGG
+        node: {fileID: -9131722960773892292}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -258,11 +216,16 @@ MonoBehaviour:
   - {fileID: -1716293540530162336}
   - {fileID: 819885994994993230}
   - {fileID: -474060706983929281}
-  - {fileID: -7818232890993911171}
+  - {fileID: -9131722960773892292}
   onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  currentDialogueNode: {fileID: -3493469356272221772}
+  onNextPhrase:
+    m_PersistentCalls:
+      m_Calls: []
+  onHandbookChoose:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &819885994994993230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,11 +250,8 @@ MonoBehaviour:
       _typeQualifiedName: BaseNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
         PublicKeyToken=null
       connections:
-      - fieldName: output 0
-        node: {fileID: -7818232890993911171}
-        reroutePoints: []
-      - fieldName: output 2
-        node: {fileID: -7818232890993911171}
+      - fieldName: "(c4c...) \u0421\u0442\u0430\u0440\u0438\u043A \u0431\u0438\u043B\u043B"
+        node: {fileID: -9131722960773892292}
         reroutePoints: []
       _direction: 0
       _connectionType: 0
@@ -323,7 +283,7 @@ MonoBehaviour:
   m_Name: Start
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -520, y: -88}
+  position: {x: -616, y: -88}
   ports:
     keys:
     - output
@@ -337,7 +297,7 @@ MonoBehaviour:
         node: {fileID: -3493469356272221772}
         reroutePoints: []
       _direction: 1
-      _connectionType: 0
+      _connectionType: 1
       _typeConstraint: 0
       _dynamic: 0
   output: {fileID: 0}

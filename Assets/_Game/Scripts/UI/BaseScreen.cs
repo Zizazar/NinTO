@@ -18,7 +18,6 @@ namespace _Game.Scripts.UI
             gameObject.SetActive(false);
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
         public virtual void Toggle()
         {
             //gameObject.SetActive(!IsActive);

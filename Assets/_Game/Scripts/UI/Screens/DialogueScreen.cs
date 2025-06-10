@@ -32,6 +32,7 @@ namespace _Game.Scripts.UI.Screens
             {
                 dialogueInProcess = true;
                 Show();
+                G.input.Dialogue.Enable();
             }
         }
 
@@ -45,7 +46,21 @@ namespace _Game.Scripts.UI.Screens
         }
 
 
-        
+        public override void Hide()
+        {
+            base.Hide();
+            G.input.Player.Enable();
+            G.input.Dialogue.Disable();
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            G.input.Player.Disable();
+            G.input.Dialogue.Enable();
+            G.input.Dialogue.Next.Enable();
+        }
+
 
         private void Update()
         {

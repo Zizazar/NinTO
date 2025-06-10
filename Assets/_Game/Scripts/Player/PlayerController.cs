@@ -31,6 +31,8 @@ namespace _Game.Scripts.Player
             _parallaxCamera = G.camera.GetComponent<ParallaxCamera>();
             _playerInteraction = GetComponent<PlayerInteraction>();
             
+            G.input.Player.OpenHandbook.performed += OpenHandbook;
+            
             _initialized = true;
         }
 
@@ -59,12 +61,6 @@ namespace _Game.Scripts.Player
         private void OpenHandbook(InputAction.CallbackContext ctx)
         {
             G.ui.ToggleScreen<HandbookScreen>();
-        }
-
-        private void OnNextDialogue(InputAction.CallbackContext ctx)
-        {
-            Debug.Log("Next dialogue");
-            _dialogueGraph?.NextPhrase();
         }
 
     private void Update()

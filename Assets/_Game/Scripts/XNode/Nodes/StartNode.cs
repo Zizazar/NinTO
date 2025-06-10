@@ -1,19 +1,23 @@
-﻿using XNode;
+﻿using UnityEngine;
+using XNode;
 
 [NodeTint("#4CAF50")]
-public class StartNode : Node {
+public class StartNode : BaseNode {
 
-	[Output] public BaseNode output;
+	[Output(ShowBackingValue.Never, ConnectionType.Override)] public BaseNode output;
 
-	public void Start()
+	public override void MoveNext()
 	{
-		GetNextNode()?.Execute();
-	}
-	
-	public BaseNode GetNextNode() {
 		NodePort port = GetOutputPort("output");
-		if (!port.IsConnected) return null;
-		return port.Connection.node as BaseNode;
+		if (port.Connection != null) {
+			(port.Connection.node as BaseNode)?.Execute();
+		}
+		else
+		{
+			Debug.LogWarning("No output port connected to start node");
+		}
 	}
+
+	public override void Execute() => MoveNext();
 
 }
